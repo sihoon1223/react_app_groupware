@@ -1,0 +1,15 @@
+{
+  "name": "mobileBizApp",
+  "displayName": "mobileBizApp",
+  "splash": {
+    "image": "./assets/imgs/ktnet_kor_1242.png",
+    "resizeMode": "contain",
+    "ldpi": "./assets/imgs/ktnet_kor_1242.png",
+    "mdpi": "./assets/imgs/ktnet_kor_1242.png",
+    "hdpi": "./assets/imgs/ktnet_kor_1242.png",
+    "xhdpi": "./assets/imgs/ktnet_kor_1242.png",
+    "xxhdpi": "./assets/imgs/ktnet_kor_1242.png",
+    "xxxhdpi": "./assets/imgs/ktnet_kor_1242.png",
+    "backgroundColor": "#fcfcfc"
+  }
+}
