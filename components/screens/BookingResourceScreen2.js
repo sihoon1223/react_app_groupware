@@ -18,7 +18,6 @@ export default class BookingResourceScreen2 extends React.Component {
   }
 
   render() {
-    console.log('refresh');
     const day = this.props.navigation.state.params.day.dateString;
     return (
       <View style={styles.container}>

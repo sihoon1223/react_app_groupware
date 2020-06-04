@@ -49,7 +49,7 @@ export default class Header extends Component {
               resizeMode="contain"
               style={{
                 width: wp('25%'),
-                height: hp('8%'),
+                height: wp('100%') < 480 ? hp('8%') : hp('5%'),
               }}
               source={require('../../assets/imgs/ktnet_logo_white.png')}
             />

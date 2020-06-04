@@ -32,6 +32,16 @@ export default class CustomDrawerMenu extends Component {
         navOptionName: '회의실 예약',
         screenToNavigate: 'BookingStack',
       },
+      {
+        navOptionIcon: 'lock',
+        navOptionName: '테스트페이지 (도영)',
+        screenToNavigate: 'Test_page1',
+      },
+      {
+        navOptionIcon: 'lock',
+        navOptionName: '테스트페이지 (시훈)',
+        screenToNavigate: 'Test_page2',
+      },
     ];
   }
   componentDidMount() {

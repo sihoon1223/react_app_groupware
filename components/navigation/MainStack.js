@@ -8,7 +8,8 @@ import {Image, Dimensions, Platform, View} from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CheckExecutiveScreen from '../screens/CheckExecutiveScreen';
-
+import TestScreen1 from '../screens/TestScreen1';
+import TestScreen2 from '../screens/TestScreen2';
 import SurveyNavigation from './SurveyNavigation';
 import SettingNavigation from './SettingNavigation';
 import BookingNavigation from './BookingNavigation';
@@ -49,6 +50,18 @@ const DrawerNavigation = createDrawerNavigator(
     SettingStack: {
       // screen: UpdateExcutiveListScreen,
       screen: SettingNavigation,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    Test_page1: {
+      screen: TestScreen1,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    Test_page2: {
+      screen: TestScreen2,
       navigationOptions: {
         headerShown: false,
       },
