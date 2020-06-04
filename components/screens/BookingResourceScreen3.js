@@ -1,31 +1,25 @@
 import React from 'react';
 
-import {StyleSheet, View, Text, Button, TextInput} from 'react-native';
-
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Platform,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Button} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-//import PickerAndroid from "react-native-picker-android";
-
 import RNPickerSelect from 'react-native-picker-select';
-//import TimePicker from "react-native-simple-time-picker";
-//import Picker from "react-native-multiple-picker";
 
 import {SpinPicker} from 'react-native-spin-picker';
-// npm install react-native-picker-select
-// npm install react-native-simple-time-picker
-// npm install rc-time-picker
-// npm install react-native-linear-gradient
-//npm i react-native-spin-picker
-// npm install react-native-picker-android
 
-// npm install react-native-date-picker
-
-//let Picker = Platform.OS === "ios" ? PickerIOS : PickerAndroid;
-//let PickerItem = Picker.Item;
-//import Picker from "react-native-multiple-picker";
 const hour = [
   '09:00',
   '09:30',
@@ -75,263 +69,182 @@ export default class BookingResourceScreen3 extends React.Component {
     // console.log(this.props.navigation.state.params._setIsRefreshing);
   }
 
-  // InputAccessoryView() {
-  //   return (
-  //     <View style={defaultStyles.modalViewMiddle}>
-  //       <TouchableWithoutFeedback
-  //         onPress={() => {
-  //           this.setState(
-  //             {
-  //               favSport5: this.state.previousFavSport5,
-  //             },
-  //             () => {
-  //               this.inputRefs.favSport5.togglePicker(true);
-  //             }
-  //           );
-  //         }}
-  //         hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}
-  //       >
-  //         <View testID="needed_for_touchable">
-  //           <Text
-  //             style={[
-  //               defaultStyles.done,
-  //               { fontWeight: "normal", color: "red" },
-  //             ]}
-  //           >
-  //             Cancel
-  //           </Text>
-  //         </View>
-  //       </TouchableWithoutFeedback>
-  //       <Text>Name | Prefer</Text>
-  //       <TouchableWithoutFeedback
-  //         onPress={() => {
-  //           this.inputRefs.favSport5.togglePicker(true);
-  //         }}
-  //         hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}
-  //       >
-  //         <View testID="needed_for_touchable">
-  //           <Text style={defaultStyles.done}>Done</Text>
-  //         </View>
-  //       </TouchableWithoutFeedback>
-  //     </View>
-  //   );
-  // }
-
   render() {
     //const day = this.props.navigation.state.params.day.dateString;
 
     //const minute = [00, 30];
     //console.log(PickerItem);
     return (
-      <View style={styles.container}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{flexGrow: 1, backgroundColor: 'red'}}>
         <View style={styles.day_header}>
-          <Text style={styles.day}>text</Text>
-        </View>
-        <View
-          // style={{
-          //   justifyContent: "center",
-          //   alignItems: "center",
-          //   flex: 1,
-          //   padding: "5%",
-          // }}
-          style={
-            Platform.OS === 'ios'
-              ? pickerSelectStyles.inputIOS
-              : pickerSelectStyles.inputAndroid
-          }>
-          <Text>회의실 선택</Text>
-          <RNPickerSelect
-            placeholder={{}}
-            onValueChange={change => {
-              // console.log(change);
-              this.setState({
-                roomName: change,
-              });
-            }}
-            useNativeAndroidPickerStyle={false}
-            style={pickerSelectStyles}
-            items={[
-              {label: 'roomA', value: 'roomA'},
-              {label: 'roomB', value: 'roomB'},
-              {label: 'roomC', value: 'roomC'},
-              {label: 'roomD', value: 'roomD'},
-              {label: 'roomE', value: 'roomE'},
-              {label: 'roomF', value: 'roomF'},
-              {label: 'roomG', value: 'roomG'},
-              {label: 'roomH', value: 'roomH'},
-            ]}
-            value={this.state.roomName}
-          />
+          <Text style={styles.day}>{this.state.day}</Text>
         </View>
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-          }}>
-          <View
-            style={{
-              height: '50%',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
+        <View style={styles.container}>
+          <View style={styles.roomPick_container}>
+            <View style={styles.title_container}>
+              <Text>회의실 선택</Text>
+            </View>
 
-              borderWidth: 2,
-              borderColor: 'lightgray',
-            }}>
-            <View
-              style={
-                (Platform.OS === 'ios'
-                  ? pickerSelectStyles.inputIOS
-                  : pickerSelectStyles.inputAndroid,
-                {
-                  //marginLeft: "10%",
-                  //marginRight: "10%",
-                  borderWidth: 2,
-                  borderColor: 'gray',
-                  alignContent: 'center',
-                  justifyContent: 'space-around',
-                  backgroundColor: 'white',
-                  flexDirection: 'row',
-                })
-              }>
+            <View style={styles.roomPick_container_cover}>
               <View
-                style={{
-                  width: '40%',
-                  height: '40%',
-                  borderWidth: 1,
-                  borderColor: 'lightgray',
-                  backgroundColor: 'white',
-                }}>
-                <Text style={{alignSelf: 'center'}}>시작시간</Text>
-                <SpinPicker
-                  data={hour}
-                  value={this.state.startTime}
-                  onValueChange={selectedItem =>
+                style={
+                  Platform.OS === 'ios'
+                    ? pickerSelectStyles.inputIOS
+                    : pickerSelectStyles.inputAndroid
+                }>
+                <RNPickerSelect
+                  placeholder={{}}
+                  onValueChange={change => {
+                    // console.log(change);
                     this.setState({
-                      startTime: selectedItem,
-                      endTime: selectedItem,
-                    })
-                  }
-                  keyExtractor={number => {
-                    //  console.log(number);
-                    return number.toString();
+                      roomName: change,
+                    });
                   }}
-                  //onInputValueChanged={this.onValueChanged}
-                  renderItem={item => (
-                    <View
-                      style={{
-                        backgroundColor: 'white',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={{color: 'black', fontSize: 25}}>
-                        {item.toString()}
-                      </Text>
-                    </View>
-                  )}
-                />
-              </View>
-
-              {/* <View style={{ width: "1%" }}>
-                <Text style={{ fontSize: 50 }}></Text>
-              </View> */}
-
-              <View
-                style={{
-                  width: '40%',
-                  height: '40%',
-                  borderWidth: 1,
-                  borderColor: 'lightgray',
-                  backgroundColor: 'white',
-                }}>
-                <Text style={{color: 'black', alignSelf: 'center'}}>
-                  종료시간
-                </Text>
-                <SpinPicker
-                  data={hour}
-                  value={this.state.endTime}
-                  onValueChange={selectedItem =>
-                    this.setState({endTime: selectedItem})
-                  }
-                  keyExtractor={number => number.toString()}
-                  //onInputValueChanged={this.onValueChanged}
-                  renderItem={item => (
-                    <View
-                      style={{
-                        backgroundColor: 'white',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={{color: 'black', fontSize: 25}}>
-                        {item.toString()}
-                      </Text>
-                    </View>
-                  )}
+                  useNativeAndroidPickerStyle={false}
+                  style={pickerSelectStyles}
+                  items={[
+                    {label: 'roomA', value: 'roomA'},
+                    {label: 'roomB', value: 'roomB'},
+                    {label: 'roomC', value: 'roomC'},
+                    {label: 'roomD', value: 'roomD'},
+                    {label: 'roomE', value: 'roomE'},
+                    {label: 'roomF', value: 'roomF'},
+                    {label: 'roomG', value: 'roomG'},
+                    {label: 'roomH', value: 'roomH'},
+                  ]}
+                  value={this.state.roomName}
                 />
               </View>
             </View>
           </View>
-        </View>
-        <View
-          style={{
-            marginBottom: '5%',
-            marginLeft: '10%',
-            marginRight: '10%',
-            backgroundColor: 'white',
-            borderWidth: 1,
-            borderColor: 'black',
-            height: '35%',
-            padding: '10%',
-          }}>
-          <Text>이용목적</Text>
-          <TextInput
-            style={styles.inputArea}
-            placeholder="이용목적을 입력해주세요"
-            keyboardType="default"
-            multiline
-            blurOnSubmit={false}
-            returnKeyType="default"
-            onChangeText={text =>
-              this.setState({
-                description: text,
-              })
-            }
-          />
-          <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-            <Button
-              title="예약하기"
-              onPress={() => {
-                console.log(
-                  this.state.startTime,
-                  this.state.endTime,
-                  this.state.roomName,
-                  this.state.description,
-                );
-                let startTime = this.state.startTime.split(':');
-                let endTime = this.state.endTime.split(':');
-                if (startTime[0] > endTime[0]) {
-                  console.log('fail');
-                  return;
-                } else if (
-                  startTime[0] === endTime[0] &&
-                  startTime[1] >= endTime[1]
-                ) {
-                  console.log('fail');
-                  return;
+
+          <View style={styles.timePick_container}>
+            <View style={styles.title_container}>
+              <Text>시간 선택</Text>
+            </View>
+            <View style={styles.timePick_Area}>
+              <View style={styles.timePick_Item}>
+                <View style={styles.title_container2}>
+                  <Text>시작시간</Text>
+                </View>
+                <View style={styles.timePick_selector}>
+                  <SpinPicker
+                    data={hour}
+                    value={this.state.startTime}
+                    onValueChange={selectedItem =>
+                      this.setState({
+                        startTime: selectedItem,
+                        endTime: selectedItem,
+                      })
+                    }
+                    keyExtractor={number => {
+                      //  console.log(number);
+                      return number.toString();
+                    }}
+                    //onInputValueChanged={this.onValueChanged}
+                    renderItem={item => (
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                        }}>
+                        <Text style={{color: 'black', fontSize: 25}}>
+                          {item.toString()}
+                        </Text>
+                      </View>
+                    )}
+                  />
+                </View>
+              </View>
+              <View style={styles.timePick_Item}>
+                <View style={styles.title_container2}>
+                  <Text>종료시간</Text>
+                </View>
+
+                <View style={styles.timePick_selector}>
+                  <SpinPicker
+                    data={hour}
+                    value={this.state.endTime}
+                    onValueChange={selectedItem =>
+                      this.setState({endTime: selectedItem})
+                    }
+                    keyExtractor={number => number.toString()}
+                    //onInputValueChanged={this.onValueChanged}
+                    renderItem={item => (
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                        }}>
+                        <Text style={{color: 'black', fontSize: 25}}>
+                          {item.toString()}
+                        </Text>
+                      </View>
+                    )}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.description_container}>
+            <View style={styles.title_container}>
+              <Text>이용목적</Text>
+            </View>
+            <View style={styles.inputText_container}>
+              <TextInput
+                style={styles.inputArea}
+                placeholder="이용목적을 입력해주세요"
+                keyboardType="default"
+                multiline
+                blurOnSubmit={false}
+                returnKeyType="default"
+                onChangeText={text =>
+                  this.setState({
+                    description: text,
+                  })
                 }
-                console.log('success');
-              }}
-            />
-            <Button
-              title="취소하기"
-              onPress={() => {
-                this.props.navigation.navigate('Booking_step2', {
-                  isRefreshing: true,
-                });
-              }}
-            />
+              />
+            </View>
+            <View style={styles.button_container}>
+              <Button
+                title="예약하기"
+                onPress={() => {
+                  console.log(
+                    this.state.startTime,
+                    this.state.endTime,
+                    this.state.roomName,
+                    this.state.description,
+                  );
+                  let startTime = this.state.startTime.split(':');
+                  let endTime = this.state.endTime.split(':');
+                  if (startTime[0] > endTime[0]) {
+                    console.log('fail');
+                    return;
+                  } else if (
+                    startTime[0] === endTime[0] &&
+                    startTime[1] >= endTime[1]
+                  ) {
+                    console.log('fail');
+                    return;
+                  }
+                  console.log('success');
+                }}
+              />
+              <Button
+                title="취소하기"
+                onPress={() => {
+                  this.props.navigation.navigate('Booking_step2', {
+                    isRefreshing: true,
+                  });
+                }}
+              />
+            </View>
           </View>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -347,67 +260,127 @@ const styles = StyleSheet.create({
     flex: 1,
     //justifyContent: "center",
     //alignSelf: "center",
-    backgroundColor: '#c5c2c2b0',
-    paddingBottom: '5%',
+    backgroundColor: '#eeeeee',
   },
+  title_container: {
+    flex: 1,
+  },
+  title_container2: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'orange',
+  },
+  roomPick_container: {
+    flex: 1,
+    backgroundColor: 'white',
+    flexDirection: 'column',
+    margin: wp('100%') < 450 ? wp('3%') : wp('1.5%'),
+    padding: wp('100%') < 450 ? wp('3%') : wp('1.5%'),
+  },
+  timePick_container: {
+    flex: 1,
+    backgroundColor: 'white',
+    flexDirection: 'column',
+    margin: wp('100%') < 450 ? wp('3%') : wp('1.5%'),
+    padding: wp('100%') < 450 ? wp('3%') : wp('1.5%'),
+  },
+  timePick_Area: {
+    flex: 4,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: 'lightgray',
+  },
+  timePick_Item: {
+    flex: 4,
+
+    margin: 20,
+  },
+  timePick_selector: {
+    flex: 4,
+  },
+  description_container: {
+    flex: 1,
+    backgroundColor: 'white',
+    margin: wp('100%') < 450 ? wp('3%') : wp('1.5%'),
+    padding: wp('100%') < 450 ? wp('3%') : wp('1.5%'),
+  },
+
   day_header: {
     width: wp('100%'),
     height: hp('3%'),
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#cdcdcd',
+    backgroundColor: '#eeeeee',
   },
   day: {
     alignSelf: 'center',
     fontWeight: 'bold',
   },
   inputArea: {
-    marginTop: wp('100%') < 450 ? wp('3%') : wp('1.5%'), //10
-    height: wp('100%') < 450 ? wp('25%') : wp('12.5%'), //100
-    borderColor: 'gray',
+    // marginTop: wp('100%') < 450 ? wp('3%') : wp('1.5%'), //10
+    // height: wp('100%') < 450 ? wp('25%') : wp('12.5%'), //100
+    flex: 1,
+    borderColor: 'lightgray',
     borderWidth: 1,
-    textAlignVertical: 'top',
+    // textAlignVertical: 'top',
     backgroundColor: 'white',
+  },
+  roomPick_container_cover: {
+    flex: 4,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    padding: wp('5%'),
+    borderWidth: 1,
+    borderColor: 'lightgray',
+  },
+  inputText_container: {
+    flex: 3,
+  },
+  button_container: {
+    padding: hp('1%'),
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    // justifyContent: "center",
-    // alignItems: "center",
-    // flex: 1,
-    // padding: "5%",
-    marginTop: '5%',
-    marginBottom: '5%',
-    marginLeft: '10%',
-    marginRight: '10%',
-    fontSize: 16,
-    backgroundColor: 'white',
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+    // marginTop: '5%',
+    // marginBottom: '5%',
+    // marginLeft: '10%',
+    // marginRight: '10%',
+    // fontSize: 16,
+
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
+    borderColor: 'lightgray',
+    height: wp('10%'),
     color: 'blue',
-    paddingRight: 30, // to ensure the text is never behind the icon
+
+    // paddingVertical: 12,
+    // paddingHorizontal: 10,
+    // borderWidth: 1,
+    // borderColor: 'gray',
+    // borderRadius: 4,
+    // color: 'blue',
+    // paddingRight: 30, // to ensure the text is never behind the icon
   },
   inputAndroid: {
-    // justifyContent: "center",
-    // alignItems: "center",
-    // flex: 1,
-    // padding: "5%",
-    backgroundColor: 'white',
-    marginTop: '5%',
-    marginBottom: '5%',
-    marginLeft: '10%',
-    marginRight: '10%',
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'gray',
-    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'lightgray',
     color: 'blue',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    // marginTop: '5%',
+    // marginBottom: '5%',
+    // marginLeft: '10%',
+    // marginRight: '10%',
+    // fontSize: 16,
+    // paddingHorizontal: 10,
+    // paddingVertical: 8,
+    // borderWidth: 0.5,
+    // borderColor: 'gray',
+    // borderRadius: 8,
+    // color: 'blue',
+    // paddingRight: 30, // to ensure the text is never behind the icon
   },
 });

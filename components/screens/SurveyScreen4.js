@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -8,28 +8,31 @@ import {
   ActivityIndicator,
   ScrollView,
   Platform,
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp}from "react-native-responsive-screen";
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-import Get from "../module/Get";
-import QuestionRadio from "../component/QuestionRadio";
-import OtherComment from "../component/OtherComment";
-import QuestionSubjective from "../component/QuestionSubjective";
-import { widthPercentageToDP } from "react-native-responsive-screen";
+import Get from '../module/Get';
+import QuestionRadio from '../component/QuestionRadio';
+import OtherComment from '../component/OtherComment';
+import QuestionSubjective from '../component/QuestionSubjective';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 const QUESTION_LIST_URL = `${
-  require("../../assets/setting/config.json").url
+  require('../../assets/setting/config.json').url
 }survey/question/`;
 export default class SurveyScreen4 extends Component {
-  TESTURL = "";
+  TESTURL = '';
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
       refreshing: false,
-      QuestionDatas: "",
+      QuestionDatas: '',
       AnswerDatas: [],
-      otherComment: "",
+      otherComment: '',
       degree_id: this.props.navigation.state.params.degree_id,
       department_id: this.props.navigation.state.params.dept_id,
       service_id: this.props.navigation.state.params.service_id,
@@ -37,67 +40,67 @@ export default class SurveyScreen4 extends Component {
       QuestionName: [],
       QuestionOffset: [],
     };
-    this.flatListRef = "";
-    this.scrollRef = "";
+    this.flatListRef = '';
+    this.scrollRef = '';
     this.TESTURL = QUESTION_LIST_URL + this.state.degree_id;
   }
   _setAnswerCheck = (isReq, questionId, questionName) => {
-    var mergeJSON = require("merge-json");
+    var mergeJSON = require('merge-json');
     this.state.QuestionisAnswered = mergeJSON.merge(
       this.state.QuestionisAnswered,
-      { [`${questionId}`]: isReq }
+      {[`${questionId}`]: isReq},
     );
     this.state.QuestionName = mergeJSON.merge(this.state.QuestionName, {
       [`${questionId}`]: questionName,
     });
   };
   _setAnswerDatas = (questionId, text) => {
-    var mergeJSON = require("merge-json");
+    var mergeJSON = require('merge-json');
     var ans = {
       [`ans-${questionId}`]: text,
     };
     this.state.AnswerDatas = mergeJSON.merge(this.state.AnswerDatas, ans);
   };
-  _dataFromChild = (datas) => {
+  _dataFromChild = datas => {
     //콜백메서드 등록
-    this.setState({ QuestionDatas: datas, isLoading: false });
+    this.setState({QuestionDatas: datas, isLoading: false});
   };
-  _ChangeOtherComment = (text) => {
+  _ChangeOtherComment = text => {
     this.state.otherComment = text;
   };
   onRefresh = () => {
     this._getSurveyQuestionList();
-    console.log("onRefresh2");
+    console.log('onRefresh2');
   };
   _setValue = (questionId, value) => {
-    var mergeJSON = require("merge-json");
+    var mergeJSON = require('merge-json');
     var ans = {
       [`ans-${questionId}`]: value,
     };
     this.state.AnswerDatas = mergeJSON.merge(this.state.AnswerDatas, ans);
   };
-  _findDimensions = (layout) => {
-    const { x, y, width, height } = layout;
+  _findDimensions = layout => {
+    const {x, y, width, height} = layout;
     if (this.state.QuestionOffset.length === 0) {
       this.state.QuestionOffset.push(0);
     } else {
       this.state.QuestionOffset.push(
-        this.state.QuestionOffset[this.state.QuestionOffset.length - 1] + height
+        this.state.QuestionOffset[this.state.QuestionOffset.length - 1] +
+          height,
       );
     }
   };
-  _renderQuestion = ({ item }) => {
-    const { id, degree_id, type, required, question, children } = item;
+  _renderQuestion = ({item}) => {
+    const {id, degree_id, type, required, question, children} = item;
     //console.log("_renderQuestion,", this.state.sihoon);
-    if (type === "radio") {
+    if (type === 'radio') {
       return (
         <View
-          onLayout={(event) => {
+          onLayout={event => {
             this._findDimensions(event.nativeEvent.layout);
-          }}
-        >
+          }}>
           <QuestionRadio
-            ref={(ref) => (this.questionRadio = ref)}
+            ref={ref => (this.questionRadio = ref)}
             id={id}
             degree_id={degree_id}
             type={type}
@@ -106,16 +109,15 @@ export default class SurveyScreen4 extends Component {
             children={children}
             onSelect={this._setValue}
             reqCheck={this._setAnswerCheck}
-          ></QuestionRadio>
+          />
         </View>
       );
-    } else if (type === "text") {
+    } else if (type === 'text') {
       return (
         <View
-          onLayout={(event) => {
+          onLayout={event => {
             this._findDimensions(event.nativeEvent.layout);
-          }}
-        >
+          }}>
           <QuestionSubjective
             id={id}
             degree_id={degree_id}
@@ -124,7 +126,7 @@ export default class SurveyScreen4 extends Component {
             question={question}
             _setAnswerDatas={this._setAnswerDatas}
             reqCheck={this._setAnswerCheck}
-          ></QuestionSubjective>
+          />
         </View>
       );
     } else {
@@ -142,12 +144,12 @@ export default class SurveyScreen4 extends Component {
       const index = item - firstkey;
       if (this.state.QuestionisAnswered[item] === false) {
         Alert.alert(
-          "필수 항목을 입력해주세요\n",
-          "- " + this.state.QuestionName[item]
+          '필수 항목을 입력해주세요\n',
+          '- ' + this.state.QuestionName[item],
         ); //이유는 모르겠지만 alert 때문에 랜더링이 2번되서 호출 2번함;
         //alert("필수 항목을 입력해주세요"); //이유는 모르겠지만 alert 때문에 랜더링이 2번되서 호출 2번함;
-        if (Platform.OS === "ios") {
-          console.log("ios: ", this.scroll);
+        if (Platform.OS === 'ios') {
+          console.log('ios: ', this.scroll);
           this.flatListRef.scrollToIndex({
             animated: true,
             index: index,
@@ -179,11 +181,11 @@ export default class SurveyScreen4 extends Component {
         return;
       }
     }
-    const url = new URL("http://61.73.147.176/api/v1/survey");
+    const url = new URL('http://61.73.147.176/api/v1/survey');
     let headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
-    var mergeJSON = require("merge-json");
+    var mergeJSON = require('merge-json');
     var ans = {
       [`memo`]: this.state.otherComment,
     };
@@ -196,33 +198,33 @@ export default class SurveyScreen4 extends Component {
     body = mergeJSON.merge(body, this.state.AnswerDatas);
     // console.log(body);
     fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: headers,
       body: JSON.stringify(body),
     })
-      .then(function (response) {
+      .then(function(response) {
         if (!response.ok) {
           throw Error(response);
         }
         return response;
       })
-      .then(function (response) {
+      .then(function(response) {
         //
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log(error);
       });
-    if (Platform.OS === "web") {
-      alert("설문조사가 완료되었습니다.");
+    if (Platform.OS === 'web') {
+      alert('설문조사가 완료되었습니다.');
     } else {
-      Alert.alert("설문조사가 완료되었습니다.");
+      Alert.alert('설문조사가 완료되었습니다.');
     }
-    this.props.navigation.navigate("Survey_step1");
+    this.props.navigation.navigate('Survey_step1');
   };
   render() {
     console.log(this.state.QuestionDatas);
     return this.state.isLoading ? (
-      <View style={{ flex: 1, justifyContent: "center" }}>
+      <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="small" color="gray" />
         <Get url={this.TESTURL} dataFromChild={this._dataFromChild} />
       </View>
@@ -231,20 +233,19 @@ export default class SurveyScreen4 extends Component {
         <Text style={styles.title}>설문조사</Text>
         <View style={styles.survey_container}>
           <Text style={styles.text}>Step4. 설문 답변을 입력해주세요.</Text>
-          {Platform.OS === "ios" ? (
+          {Platform.OS === 'ios' ? (
             <KeyboardAwareScrollView
-              innerRef={(ref) => {
+              innerRef={ref => {
                 this.scroll = ref;
               }}
               contentContainerStyle={{
                 flex: 1,
                 width: null,
                 height: null,
-              }}
-            >
+              }}>
               <FlatList
                 data={this.state.QuestionDatas}
-                ref={(ref) => {
+                ref={ref => {
                   this.flatListRef = ref;
                 }}
                 keyExtractor={(item, index) => index.toString()}
@@ -261,13 +262,12 @@ export default class SurveyScreen4 extends Component {
             </KeyboardAwareScrollView>
           ) : (
             <ScrollView
-              ref={(ref) => {
+              ref={ref => {
                 this.scrollRef = ref;
-              }}
-            >
+              }}>
               <FlatList
                 data={this.state.QuestionDatas}
-                ref={(ref) => {
+                ref={ref => {
                   this.flatListRef = ref;
                 }}
                 keyExtractor={(item, index) => index.toString()}
@@ -289,24 +289,24 @@ export default class SurveyScreen4 extends Component {
 }
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: '100%',
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#FCFCFC",
+    flexDirection: 'column',
+    backgroundColor: '#FCFCFC',
   },
   survey_container: {
     flex: 1,
-    height: wp("100%")<450 ? wp("25%"):wp("12.5%"), //100
-    padding: "5%",
+    height: wp('100%') < 450 ? wp('25%') : wp('12.5%'), //100
+    padding: '5%',
   },
   title: {
-    fontSize: wp("100%")<450 ? wp("6%"):wp("3%"), //20
-    paddingTop: "5%",
-    paddingLeft: "5%",
-    fontWeight: "bold",
+    fontSize: wp('100%') < 450 ? wp('6%') : wp('3%'), //20
+    paddingTop: '5%',
+    paddingLeft: '5%',
+    fontWeight: 'bold',
   },
   text: {
-    paddingBottom: wp("100%")<450 ? wp("2%"):wp("1%"), //10
+    paddingBottom: wp('100%') < 450 ? wp('2%') : wp('1%'), //10
   },
   // opinion: {
   //   fontWeight: "bold",
