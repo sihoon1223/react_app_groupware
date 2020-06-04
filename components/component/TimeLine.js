@@ -121,22 +121,22 @@ export default class TimeLine extends React.Component {
     const state = this.state;
 
     return (
-      <View style={styles.container}>
-        <View style={styles.row}>
-          {state.timedata.map((rowdata, index) => {
-            return rowdata.check ? (
-              rowdata.isStart ? (
+      <View style={styles.row}>
+        {state.timedata.map((rowdata, index) => {
+          return rowdata.check ? (
+            rowdata.isStart ? (
+              <View>
                 <TouchableOpacity
                   onPress={() => console.log('modal 띠우기')}
                   key={index}
                   style={{
+                    flex: 1,
                     zIndex: 10,
                     overflow: 'hidden',
                     backgroundColor: 'lightblue',
                     borderRightWidth: 0.5,
                     borderRightColor: 'lightgray',
                     width: rowdata.size * wp('10%'),
-                    height: hp('10%'),
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
@@ -144,8 +144,10 @@ export default class TimeLine extends React.Component {
                     {rowdata.id + ' ' + rowdata.name + ' ' + rowdata.script}
                   </Text>
                 </TouchableOpacity>
-              ) : null
-            ) : (
+              </View>
+            ) : null
+          ) : (
+            <View>
               <TouchableOpacity
                 key={index}
                 style={styles.timeblock}
@@ -159,11 +161,12 @@ export default class TimeLine extends React.Component {
                     // _setIsRefreshing: this.props._setIsRefreshing,
                   })
                 }>
-                {/* <Text>{rowdata.id}</Text> */}
+                <Text>{rowdata.id}</Text>
               </TouchableOpacity>
-            );
-          })}
-        </View>
+            </View>
+          );
+        })}
+
         <Modal
           isVisible={this.state.isModalVisible}
           // coverScreen={false}
@@ -183,19 +186,21 @@ export default class TimeLine extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {width: wp('260%'), flex: 1},
+  container: {
+    width: wp('260%'),
+    flex: 1,
+  },
   row: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   timeblock: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderRightWidth: 0.5,
     borderRightColor: '#cdcdcd',
     width: wp('10%'),
-    height: hp('10%'),
   },
 });

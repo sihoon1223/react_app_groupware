@@ -84,19 +84,6 @@ export default class Room extends Component {
                         navigation={this.props.navigation}
                         //_setIsRefreshing={this.props._setIsRefreshing}
                       />
-                      {/* {this.state.tableHead.map((item, key) => {
-                        return (
-                          <View style={styles.hour}>
-                            {this.state.minute.map((item, key) => {
-                              return (
-                                <View style={styles.minute}>
-                                  <Text style={styles.minute_text}></Text>
-                                </View>
-                              );
-                            })}
-                          </View>
-                        );
-                      })} */}
                     </View>
                   );
                 })}
@@ -178,7 +165,6 @@ const styles = StyleSheet.create({
   shedule_container: {
     width: wp('260%'),
     flex: 1,
-    //backgroundColor: "blue",
   },
   shedule: {
     flex: 1,
