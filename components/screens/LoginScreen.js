@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -15,76 +16,82 @@ import {
   removeOrientationListener as rol,
 } from 'react-native-responsive-screen';
 import {CheckBox, Button} from 'react-native-elements';
+import {ScrollView} from 'react-native-gesture-handler';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       checked: false,
     };
+    console.log('this, ' + hp('100%'));
   }
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        {/* <View style={styles.container}> */}
-        <View style={styles.logo_container}>
-          <Image
-            resizeMode="cover"
-            style={styles.logo}
-            source={require('../../assets/imgs/ktnet_kor_1242.png')}
-          />
-        </View>
-        <View style={styles.login_container}>
-          <View style={styles.login_box}>
-            <View style={styles.login_text_container}>
-              <Text style={styles.login_text}>KTNET Mobile ERP</Text>
-              <Text style={styles.login_text}>devlopment</Text>
-            </View>
-            <View style={styles.gray_border} />
-            <View style={styles.login_text_container2}>
-              <Text style={styles.login_text2}>KTNET 이메일 주소</Text>
-              <TextInput
-                placeholder="kt123@ktnet.co.kr"
-                keyboardType="default"
-                multiline
-                //blurOnSubmit={false}
-                returnKeyType="default"
-                style={styles.login_input}
+      <ScrollView scrollEnabled={true}>
+        <KeyboardAwareScrollView>
+          <View style={styles.container}>
+            <View style={styles.logo_container}>
+              <Image
+                resizeMode="cover"
+                style={styles.logo}
+                source={require('../../assets/imgs/ktnet_kor_1242.png')}
               />
             </View>
-            <View style={styles.login_check_container}>
-              <CheckBox
-                style={styles.login_checkbox}
-                checked={this.state.checked}
-                onPress={() => {
-                  this.setState({checked: true});
-                }}
-              />
-              <Text style={styles.login_check_text}>이메일 주소 저장</Text>
-            </View>
-            <View style={{flexDirection: 'column'}}>
-              <Button
-                title="로그인"
-                containerStyle={{
-                  paddingLeft: wp('5%'),
-                  paddingRight: wp('5%'),
-                  paddingTop: hp('100%') < 400 ? wp('5%') : wp('2.5%'),
-                }}
-                buttonStyle={{height: hp('5%')}}
-                titleStyle={{
-                  color: 'white',
-                  fontSize: 14,
-                  fontWeight: '300',
-                }}
-                onPress={() => {
-                  this.props.navigation.replace('HomeDrawer');
-                }}
-              />
+
+            <View style={styles.login_container}>
+              <View style={styles.login_box}>
+                <View style={styles.login_text_container}>
+                  <Text style={styles.login_text}>KTNET Mobile ERP</Text>
+                  <Text style={styles.login_text}>devlopment</Text>
+                </View>
+                <View style={styles.gray_border} />
+                <View style={styles.login_text_container2}>
+                  <Text style={styles.login_text2}>KTNET 이메일 주소</Text>
+
+                  <TextInput
+                    placeholder="kt123@ktnet.co.kr"
+                    keyboardType="default"
+                    blurOnSubmit={true}
+                    returnKeyType="done"
+                    style={styles.login_input}
+                  />
+                </View>
+                <View style={styles.login_check_container}>
+                  <CheckBox
+                    style={styles.login_checkbox}
+                    checked={this.state.checked}
+                    onPress={() => {
+                      this.setState({checked: true});
+                    }}
+                  />
+                  <Text style={styles.login_check_text}>이메일 주소 저장</Text>
+                </View>
+                <View style={{flexDirection: 'column'}}>
+                  <Button
+                    title="로그인"
+                    containerStyle={{
+                      paddingLeft: wp('5%'),
+                      paddingRight: wp('5%'),
+                      paddingTop: hp('100%') < 400 ? wp('5%') : wp('2.5%'),
+                    }}
+                    buttonStyle={{height: hp('5%')}}
+                    titleStyle={{
+                      color: 'white',
+                      fontSize: 14,
+                      fontWeight: '300',
+                    }}
+                    onPress={() => {
+                      this.props.navigation.replace('HomeDrawer');
+                    }}
+                  />
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-        {/* </View> */}
-      </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+      </ScrollView>
     );
   }
 }
@@ -109,6 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     height: hp('70%'),
+    //backgroundColor: 'red',
   },
   login_box: {
     height: hp('45%'),
@@ -149,13 +157,12 @@ const styles = StyleSheet.create({
   login_input: {
     marginTop: wp('100%') < 400 ? wp('5%') : wp('1.5%'), //10
     margin: wp('5%'),
-    paddingLeft: wp('2%'),
-    height: hp('4%'),
+    padding: wp('100%') < 480 ? wp('2%') : wp('1.5%'),
+    paddingTop: wp('100%') < 480 ? wp('2%') : wp('1.5%'),
+    height: wp('100%') < 480 ? wp('8%') : wp('5%'),
     borderColor: '#dadada',
     borderWidth: 1.5,
     borderRadius: 6,
-
-    textAlignVertical: 'top',
     backgroundColor: '#fcfcfc',
   },
   login_check_container: {
