@@ -26,10 +26,6 @@ import {
   removeOrientationListener as rol,
 } from 'react-native-responsive-screen';
 
-import DirectedScrollingViewTest from '../screens/DirectedScrollingViewTest';
-import TimeLine from '../component/TimeLine';
-// 다이렉티드 스크롤링뷰 테스트용
-
 const DrawerNavigation = createDrawerNavigator(
   {
     HomeScreen: {

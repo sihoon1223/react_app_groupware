@@ -1,31 +1,15 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
+  ScrollView,
   StatusBar,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-import LoadingScreen from '../mobileBizApp/components/screens/LoadingScreen';
-import MainStack from '../mobileBizApp/components/navigation/MainStack';
+import LoadingScreen from './components/screens/LoadingScreen';
+import MainStack from './components/navigation/MainStack';
 
 class App extends React.Component {
   constructor(props) {
@@ -42,9 +26,11 @@ class App extends React.Component {
     const {isLoading} = this.state;
     return (
       <View style={styles.container}>
-        {/* {Platform.OS === "ios" ? <View style={styles.statusBar} /> : <></>} */}
-        <View style={styles.statusBar} />
-        {isLoading ? <LoadingScreen /> : <MainStack />}
+        <SafeAreaView style={{flex: 1}}>
+          {/* {Platform.OS === "ios" ? <View style={styles.statusBar} /> : <></>} */}
+          <View style={styles.statusBar} />
+          {isLoading ? <LoadingScreen /> : <MainStack />}
+        </SafeAreaView>
       </View>
     );
   }
@@ -52,7 +38,7 @@ class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
+    backgroundColor: '#fcfcfc',
   },
   statusBar: {
     backgroundColor: '#fcfcfc',
