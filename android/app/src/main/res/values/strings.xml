@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">mobileBizApp</string>
+    <string name="kakao_app_key">acc6200104cd3e3f833d8ab7e20fba15</string>
 </resources>
