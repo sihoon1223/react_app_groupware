@@ -15,30 +15,35 @@
 #import "React/UIView+React.h"
 #import "React/RCTEventDispatcher.h"
 #endif
+#import <CoreLocation/CoreLocation.h>
 
 @class RCTEventDispatcher;
 
-@interface DaumMap : UIView
-  // Define view properties here with @property
-    @property (nonatomic, assign) NSMutableDictionary *initialRegion;
-    @property (nonatomic, copy) RCTDirectEventBlock onMarkerSelect;
-    @property (nonatomic, copy) RCTDirectEventBlock onMarkerPress;
-    @property (nonatomic, copy) RCTDirectEventBlock onMarkerMoved;
-    @property (nonatomic, copy) RCTDirectEventBlock onRegionChange;
-    @property (nonatomic, copy) RCTDirectEventBlock onUpdateCurrentLocation;
-    @property (nonatomic, copy) RCTDirectEventBlock onUpdateCurrentHeading;
+@interface DaumMap : UIView <CLLocationManagerDelegate>
 
+// Define view properties here with @property
+@property (nonatomic, assign) NSMutableDictionary *initialRegion;
+@property (nonatomic, copy) RCTDirectEventBlock onMarkerSelect;
+@property (nonatomic, copy) RCTDirectEventBlock onMarkerPress;
+@property (nonatomic, copy) RCTDirectEventBlock onMarkerMoved;
+@property (nonatomic, copy) RCTDirectEventBlock onRegionChange;
+@property (nonatomic, copy) RCTDirectEventBlock onUpdateCurrentLocation;
+@property (nonatomic, copy) RCTDirectEventBlock onUpdateCurrentHeading;
+@property (nonatomic, assign) float latitude;
+@property (nonatomic, assign) float longitude;
 
-    @property (nonatomic, assign) float latdouble;
-    @property (nonatomic, assign) float londouble;
-    @property (nonatomic, assign) NSInteger zoomLevel;
-    @property (nonatomic, assign) NSInteger tagIDX;
+@property (nonatomic, assign) float latdouble;
+@property (nonatomic, assign) float londouble;
+@property (nonatomic, assign) NSInteger zoomLevel;
+@property (nonatomic, assign) NSInteger tagIDX;
 
-    @property (nonatomic, assign) BOOL isTracking;
-    @property (nonatomic, assign) BOOL isCompass;
-    @property (nonatomic, assign) BOOL isCurrentMarker;
+@property (nonatomic, assign) BOOL isTracking;
+@property (nonatomic, assign) BOOL isCompass;
+@property (nonatomic, assign) BOOL isCurrentMarker;
 
-  // Initializing with the event dispatcher allows us to communicate with JS
-  - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
+@property (nonatomic , strong) CLLocationManager *locationManager;
+
+// Initializing with the event dispatcher allows us to communicate with JS
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
 @end

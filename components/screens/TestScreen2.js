@@ -1,25 +1,3 @@
-// import React, {Component} from 'react';
-// import {Text, View} from 'react-native';
-// import {NativeModules} from 'react-native';
-
-// export default class TestScreen2 extends Component {
-//   constructor(props) {
-//     super(props);
-//     // const Volume = NativeModules.Volume;
-//     // Volume.getSystemVolume((error, volume) => window.alert(volume));
-
-//     const ShowMap = NativeModules.ShowMap;
-//     ShowMap.showKakaoMap((error, volume) => window.alert(volume));
-//   }
-//   render() {
-//     return (
-//       <View>
-//         <Text>hello</Text>
-//       </View>
-//     );
-//   }
-// }
-
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {
@@ -30,12 +8,15 @@ import {
   PermissionsAndroid,
   View,
 } from 'react-native';
-
+//import Geolocation from 'react-native-geolocation-service';
+import Geolocation from '@react-native-community/geolocation';
 let REST_API_KEY = '';
 const DaumMapManager =
   Platform.OS === 'ios'
     ? NativeModules.DaumMapManager
     : NativeModules.DaumMapModule;
+
+//requireNativeComponent: view 부르는 함수
 const DaumMap = requireNativeComponent('DaumMap', TestScreen2, {
   nativeOnly: {
     onMarkerSelect: true,
@@ -50,9 +31,12 @@ export default class TestScreen2 extends Component {
 
     this.state = {
       permissionGranted: false,
+      ios_latitude: '',
+      ios_longitude: '',
     };
   }
 
+  // 현재 디바이스의 위치 권한 여부 검사
   async componentDidMount() {
     if (Platform.OS === 'android') {
       try {
@@ -72,6 +56,30 @@ export default class TestScreen2 extends Component {
         console.warn(err);
       }
     } else {
+      // iOS 면.. ?
+      //if (hasLocationPermission) {
+      // Geolocation.getCurrentPosition(
+      //   position => {
+      //     console.log(
+      //       'pos!:' +
+      //         position.coords.latitude +
+      //         ',' +
+      //         position.coords.longitude,
+      //     );
+      //     this.setState({
+      //       // ios_latitude: position.coords.latitude,
+      //       // ios_longitude: position.coords.longitude,
+      //       ios_latitude: '37.403104',
+      //       ios_longitude: '127.110941',
+      //     });
+      //   },
+      //   error => {
+      //     // See error code charts below.
+      //     console.log('err:' + error.code, error.message);
+      //   },
+      //   {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      // );
+      // // }
       this.setState({permissionGranted: true});
     }
   }
@@ -81,6 +89,8 @@ export default class TestScreen2 extends Component {
       return (
         <DaumMap
           {...this.props}
+          latitude={this.state.ios_latitude}
+          longitude={this.state.ios_longitude}
           style={[{width: '100%', height: '100%'}, this.props.style]}
           ref={ref => {
             this.map = ref;

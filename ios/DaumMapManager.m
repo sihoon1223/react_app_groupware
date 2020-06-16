@@ -30,6 +30,8 @@ RCT_EXPORT_VIEW_PROPERTY(onMarkerMoved, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRegionChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onUpdateCurrentLocation, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onUpdateCurrentHeading, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(latdouble, float)
+RCT_EXPORT_VIEW_PROPERTY(londouble, float)
 
 // 임시 디렉토리에 저장된 지도 타일 캐쉬 데이터를 모두 삭제
 RCT_EXPORT_METHOD(clearMapCache:(nonnull NSNumber *)reactTag) {

@@ -77,8 +77,6 @@ target 'mobileBizApp' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'KakaoOpenSDK', '~> 1.21.0' 
-
-
   target 'mobileBizAppTests' do
     inherit! :complete
     # Pods for testing
