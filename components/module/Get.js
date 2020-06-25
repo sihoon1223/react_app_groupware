@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
+import {Component} from 'react';
 
 class Get extends Component {
   /* 컴포넌트 생성시 */
@@ -14,14 +13,17 @@ class Get extends Component {
   componentDidMount() {
     this.getData();
   }
+
   getData = async () => {
     try {
       const response = await fetch(this.state.url);
       const responseJson = await response.json();
+
       //부모에게 다시 전달
       this.props.dataFromChild(responseJson);
+      //console.log('eee:', responseJson);
     } catch (error) {
-      console.error("Get.js -> getData() error!\n", error);
+      console.error('Get.js -> getData() error!\n', error);
     }
   };
   render() {

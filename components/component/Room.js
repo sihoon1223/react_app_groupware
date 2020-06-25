@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
+import Get from '../module/Get';
 import TimeLine from '../component/TimeLine';
 
 export default class Room extends Component {
@@ -26,20 +26,19 @@ export default class Room extends Component {
         '20:00',
         '21:00',
       ],
-      room: [
-        'roomA',
-        'roomB',
-        'roomC',
-        'roomD',
-        'roomE',
-        'roomF',
-        'roomG',
-        'roomH',
-      ],
+      room: '',
     };
   }
-
+  //get 모듈을 통해 가져온 데이터를 스테이트에 세팅
+  _dataFromChild = datas => {
+    /*
+    TODO: this.setState와 this.state.example = 'example' 의 차이가 무엇인지 명확하게 알기
+    */
+    this.setState({room: datas});
+  };
   render() {
+    const room = this.state.room;
+
     return (
       <View style={styles.container}>
         <View style={styles.day_header}>
@@ -53,15 +52,21 @@ export default class Room extends Component {
           }}>
           <View style={styles.room_header}>
             <View style={styles.empty_container} />
-            {this.state.room.map((item, key) => {
-              return (
-                <View style={styles.room_header_container} key={key}>
-                  <View style={styles.room}>
-                    <Text>{item}</Text>
-                  </View>
-                </View>
-              );
-            })}
+            <Get
+              url="http://210.181.192.190:8080/api/rooms"
+              dataFromChild={this._dataFromChild}
+            />
+            {room
+              ? room.map((item, key) => {
+                  return (
+                    <View style={styles.room_header_container} key={key}>
+                      <View style={styles.room}>
+                        <Text>{item.room_name}</Text>
+                      </View>
+                    </View>
+                  );
+                })
+              : null}
           </View>
           <ScrollView horizontal>
             <View style={styles.main_container}>
@@ -75,18 +80,20 @@ export default class Room extends Component {
                 })}
               </View>
               <View style={styles.shedule_container}>
-                {this.state.room.map((item, key) => {
-                  return (
-                    <View style={styles.shedule} key={key}>
-                      <TimeLine
-                        roomName={item}
-                        day={this.props.day}
-                        navigation={this.props.navigation}
-                        //_setIsRefreshing={this.props._setIsRefreshing}
-                      />
-                    </View>
-                  );
-                })}
+                {room
+                  ? room.map((item, key) => {
+                      return (
+                        <View style={styles.shedule} key={key}>
+                          <TimeLine
+                            roomName={item.room_name}
+                            day={this.props.day}
+                            navigation={this.props.navigation}
+                            //_setIsRefreshing={this.props._setIsRefreshing}
+                          />
+                        </View>
+                      );
+                    })
+                  : null}
               </View>
             </View>
           </ScrollView>

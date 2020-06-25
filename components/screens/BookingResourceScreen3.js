@@ -65,9 +65,9 @@ export default class BookingResourceScreen3 extends React.Component {
         this.props.navigation.state.params.day.dateString ||
         this.props.navigation.state.params.day,
     };
-
-    // console.log(this.props.navigation.state.params._setIsRefreshing);
   }
+
+  componentDidMount() {}
 
   render() {
     //const day = this.props.navigation.state.params.day.dateString;

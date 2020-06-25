@@ -1,46 +1,16 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
-import NavigationHeader from "../component/NavigationHeader";
+import NavigationHeader from '../component/NavigationHeader';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+} from 'react-native-responsive-screen';
 
 class SettingScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isSubscribe: false,
-      test: 1,
-    };
-    console.log(this.props.navigation);
   }
-
-  _checkSubscribe = (ischeck) => {
-    console.log(ischeck);
-    console.log("1:", this.state.test);
-    this.setState({
-      isSubscribe: ischeck,
-      test: this.state.test + 1,
-    });
-    console.log("2:", this.state.test);
-    this.setState((pre) => ({
-      isSubscribe: ischeck,
-      test: pre.test + 1,
-    }));
-
-    console.log("3:", this.state.test);
-  };
-  settings = [
-    {
-      routerName: "ExecutiveScreen",
-      settingName: "재실 임원 수정",
-      isAuth: true,
-    },
-    { settingName: "기본 환경 설정", isAuth: false },
-    { settingName: "푸쉬 알림 설정", isAuth: false },
-  ];
 
   render() {
     return (
@@ -53,8 +23,7 @@ class SettingScreen extends React.Component {
                 key={key}
                 onPress={() => {
                   this.props.navigation.navigate(`${item.routerName}`);
-                }}
-              >
+                }}>
                 <View style={styles.settings} key={key}>
                   <Text>{item.settingName}</Text>
                 </View>
@@ -70,26 +39,23 @@ class SettingScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    backgroundColor: "#fcfcfc",
-    //justifyContent: "center",
+    alignItems: 'center',
+    backgroundColor: '#fcfcfc',
   },
   setting_list_container: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: wp("80%"),
-    paddingTop: hp("5%"),
-    // backgroundColor: "pink",
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: wp('80%'),
+    paddingTop: hp('5%'),
   },
   settings: {
-    //alignItems: "center",
-    paddingLeft: wp("3%"),
-    justifyContent: "center",
-    width: wp("80%"),
-    height: hp("7%"),
-    backgroundColor: "#e8e8e8",
+    paddingLeft: wp('3%'),
+    justifyContent: 'center',
+    width: wp('80%'),
+    height: hp('7%'),
+    backgroundColor: '#e8e8e8',
     borderBottomWidth: 1,
-    borderBottomColor: "#e1dede",
+    borderBottomColor: '#e1dede',
   },
 });
 

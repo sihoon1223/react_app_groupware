@@ -22,6 +22,7 @@
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher {
   NSLog(@"initWithEventDispatcher");
   if ((self = [super init])) {
+    
     _eventDispatcher = eventDispatcher;
     _mapView = [[MTMapView alloc] initWithFrame:CGRectMake(self.bounds.origin.x,
                                                            self.bounds.origin.y,
@@ -34,7 +35,7 @@
     _isTracking = true;
     _isCompass  = false;
     //내 위치를 받아 tracking mode로 설정
-    [_mapView setCurrentLocationTrackingMode:MTMapCurrentLocationTrackingOnWithoutHeading];
+   // [_mapView setCurrentLocationTrackingMode:MTMapCurrentLocationTrackingOnWithoutHeading];
   }
   return self;
 }
@@ -54,8 +55,8 @@
 // APP KEY 인증 서버에 인증한 결과를 통보받을 수 있다.
 - (void)mapView:(MTMapView*)mapView openAPIKeyAuthenticationResultCode:(int)resultCode resultMessage:(NSString*)resultMessage {
   NSLog(@"mapView.openAPIKeyAuthenticationResultCode");
-  printf("resultCode %d:",resultCode);
-  NSLog(@"resultCode %@:",resultMessage);
+
+  [_mapView setCurrentLocationTrackingMode:MTMapCurrentLocationTrackingOnWithoutHeading];
   
   //지도의 구심점 만들기
   [_mapView setMapCenterPoint:[MTMapPoint mapPointWithGeoCoord:MTMapPointGeoMake(_latdouble, _londouble)] zoomLevel:(int)_zoomLevel animated:YES];
@@ -75,7 +76,7 @@
   if (self.onUpdateCurrentLocation) self.onUpdateCurrentLocation(event);
 }
 
-// 아직 파악 불가..ㅎ...
+// device 위치 방향을 인식해서 액션이랑 이어지는듯..
 - (void)mapView:(MTMapView*)mapView updateDeviceHeading:(MTMapRotationAngle)headingAngle {
   NSLog(@"mapView.updateDeviceHeading");
   id event = @{
@@ -118,7 +119,7 @@
 //      markerType = MTMapPOIItemMarkerTypeCustomImage;
 //    }
 //
-//    MTMapPOIItemMarkerSelectedType sMarkerType = MTMapPOIItemMarkerSelectedTypeRedPin;
+    //MTMapPOIItemMarkerSelectedType sMarkerType = MTMapPOIItemMarkerSelectedTypeRedPin;
 //    if ([selectPinColor isEqualToString:@"red"]) {
 //      sMarkerType = MTMapPOIItemMarkerSelectedTypeRedPin;
 //    } else if ([selectPinColor isEqualToString:@"yellow"]) {
@@ -179,9 +180,9 @@
 //  }
 //}
 //
-//- (void) setIsCurrentMarker: (BOOL)isCurrentMarker {
-//  [_mapView setShowCurrentLocationMarker:isCurrentMarker];
-//}
+- (void) setIsCurrentMarker: (BOOL)isCurrentMarker {
+  [_mapView setShowCurrentLocationMarker:isCurrentMarker];
+}
 //
 //- (void) setIsTracking:(BOOL)isTracking {
 //  _isTracking = isTracking;
