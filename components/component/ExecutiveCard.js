@@ -39,15 +39,17 @@ export default class ExecutiveCard extends React.Component {
       checkStateNumber: '',
       isAuth: this.props.isAuth || false,
       isModalVisible: false,
+      ExecId: this.props.ExecId,
       ExecName: this.props.ExecName,
       ExecRank: this.props.ExecRank,
       ExecDept: this.props.ExecDept,
       ExecPhone: this.props.ExecPhone,
       ExecState: this.props.ExecState,
-      ExecDescription: '지금은 회의중',
+      ExecDescription: this.props.description,
       isEditDescription: false,
       ChangeDescription: '',
     };
+    //console.log(this.props.ExecId);
   }
   componentDidMount() {
     lor(this);
@@ -95,6 +97,46 @@ export default class ExecutiveCard extends React.Component {
             text: 'ok',
             onPress: () => {
               resolve('YES');
+              const url = new URL(
+                'http://210.181.192.198:8080/v1/executivestate/' +
+                  this.state.ExecId,
+              );
+
+              let headers = {
+                'Content-Type': 'application/json',
+              };
+
+              console.log(
+                this.state.ExecState[this.state.checkStateNumber]
+                  .executiveState,
+              );
+
+              let body = {
+                executiveId: this.state.ExecId,
+                executiveName: this.state.ExecName,
+                executivePhone: this.state.ExecPhone,
+                executiveRank: this.state.ExecRank,
+                executiveDept: this.state.ExecDept,
+                state: this.state.ExecState[this.state.checkStateNumber]
+                  .executiveState,
+                description: this.state.ChangeDescription,
+              };
+              console.log(this.state.checkStateNumber);
+              fetch(url, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(body),
+              })
+                .then(function(response) {
+                  if (response < 0) {
+                    throw Error(response);
+                  }
+
+                  return response;
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
             },
           },
         ],
@@ -103,6 +145,7 @@ export default class ExecutiveCard extends React.Component {
     });
 
   render() {
+    //console.log(this.state.ExecState);
     return (
       <View style={styles.card_container}>
         <View style={styles.card_user}>
@@ -167,7 +210,8 @@ export default class ExecutiveCard extends React.Component {
           }}>
           {this.state.ExecState.map((data, key) => {
             if (data.value) {
-              this.state.checkStateNumber = data.number;
+              this.state.checkStateNumber = data.no - 1;
+              console.log(data.value, data.no, data.executiveState);
             }
             return (
               <View
@@ -180,7 +224,7 @@ export default class ExecutiveCard extends React.Component {
                   }}
                   onPress={() => {
                     let ExecValue = [...this.state.ExecState];
-                    if (ExecValue[data.number].value === true) {
+                    if (ExecValue[data.no - 1].value === true) {
                       return;
                     }
 
@@ -194,7 +238,44 @@ export default class ExecutiveCard extends React.Component {
                             //상태변경시 POST 바로 보낼것임
                             //변경하시겠습니까 한번 묻고 true면 POST 진행하고
                             // setState로 리랜더링 되도록
-                            ExecValue[data.number].value = true;
+
+                            const url = new URL(
+                              'http://210.181.192.198:8080/v1/executivestate/' +
+                                this.state.ExecId,
+                            );
+
+                            let headers = {
+                              'Content-Type': 'application/json',
+                            };
+
+                            let body = {
+                              executiveId: this.state.ExecId,
+                              executiveName: this.state.ExecName,
+                              executivePhone: this.state.ExecPhone,
+                              executiveRank: this.state.ExecRank,
+                              executiveDept: this.state.ExecDept,
+                              state: ExecValue[data.no - 1].executiveState,
+                              description: this.state.ExecDescription,
+                            };
+                            console.log(this.state.checkStateNumber);
+                            fetch(url, {
+                              method: 'PUT',
+                              headers: headers,
+                              body: JSON.stringify(body),
+                            })
+                              .then(function(response) {
+                                if (response < 0) {
+                                  throw Error(response);
+                                }
+
+                                return response;
+                              })
+                              .catch(function(error) {
+                                console.log(error);
+                              });
+
+                            ExecValue[data.no - 1].value = true;
+                            console.log(this.state.checkStateNumber);
                             ExecValue[
                               this.state.checkStateNumber
                             ].value = false;
@@ -212,7 +293,7 @@ export default class ExecutiveCard extends React.Component {
                       {cancelable: false},
                     );
                   }}>
-                  <Text>{data.execstate}</Text>
+                  <Text>{data.executiveState}</Text>
                 </TouchableOpacity>
               </View>
             );
