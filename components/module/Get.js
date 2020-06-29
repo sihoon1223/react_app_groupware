@@ -8,6 +8,7 @@ class Get extends Component {
     this.state = {
       url: this.props.url,
     };
+    //console.log('호출', this.props.dataType);
   }
 
   componentDidMount() {
@@ -20,8 +21,7 @@ class Get extends Component {
       const responseJson = await response.json();
 
       //부모에게 다시 전달
-      this.props.dataFromChild(responseJson);
-      //console.log('eee:', responseJson);
+      this.props.dataFromChild(this.props.dataType, responseJson);
     } catch (error) {
       console.error('Get.js -> getData() error!\n', error);
     }

@@ -9,15 +9,19 @@ import {
 } from 'react-native-responsive-screen';
 import Modal from 'react-native-modal';
 
+const blockColor = ['red', 'pink', 'yellow', 'lightblue', 'lightgreen'];
+
 export default class TimeLine extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       today: this.props.day,
       roomName: this.props.roomName,
+      rooms: this.props.rooms,
       timedata: [],
-      bookingDatas: [],
+      bookingDatas: this.props.bookings,
       isModalVisible: false,
+      selectBlockColor: '',
     };
 
     for (let i = 0; i < 26; i++) {
@@ -31,16 +35,26 @@ export default class TimeLine extends React.Component {
         id: i,
         description: '',
         isStart: false,
+        blockColor: '',
       });
     }
+    //console.log('con:', this.state.bookingDatas);
+    this._settingScheduleBlock();
   }
-
+  // componentDidMount() {
+  //   this._settingScheduleBlock();
+  // }
   _checkRoomName = data => {
     if (this.state.roomName !== data.roomName) {
       return false;
     }
     return true;
   };
+
+  _getRandomColor() {
+    var item = blockColor[Math.floor(Math.random() * blockColor.length)];
+    this.state.selectBlockColor = item;
+  }
 
   _settingScheduleBlock = () => {
     const newTimeData = this.state.timedata; // 복사
@@ -59,7 +73,7 @@ export default class TimeLine extends React.Component {
         }
 
         //newTimeData에 데이터 (스케쥴) 집어넣기
-
+        this._getRandomColor();
         for (let i = startTime[0]; i < endTime[0]; i++) {
           if (i === startTime[0]) {
             newTimeData[i] = {
@@ -73,6 +87,7 @@ export default class TimeLine extends React.Component {
               isStart: true,
               id: this.state.timedata[i].id,
               size: endTime[0] - startTime[0],
+              color: this.state.selectBlockColor,
             };
           } else {
             newTimeData[i] = {
@@ -108,24 +123,12 @@ export default class TimeLine extends React.Component {
           isModalVisible: true,
         });
   };
-  _dataFromChild = datas => {
-    this.setState({bookingDatas: datas});
-    this._settingScheduleBlock();
-  };
 
   render() {
-    const {timedata, today} = this.state;
+    const {timedata} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          {/* 스케쥴이 있을 경우 */}
-          <Get
-            url={
-              'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
-              today
-            }
-            dataFromChild={this._dataFromChild}
-          />
           {timedata.map((rowdata, index) => {
             return rowdata.check ? (
               rowdata.isStart ? (
@@ -136,10 +139,11 @@ export default class TimeLine extends React.Component {
                     style={[
                       styles.scheduleblock,
                       {width: rowdata.size * wp('10%')},
+                      {backgroundColor: rowdata.color},
                     ]}>
-                    <Text>
+                    <Text numberOfLines={2} style={{padding: 7}}>
                       {rowdata.start +
-                        '~' +
+                        ' ~ ' +
                         rowdata.end +
                         ' ' +
                         rowdata.description +
@@ -148,6 +152,33 @@ export default class TimeLine extends React.Component {
                         ')'}
                     </Text>
                   </TouchableOpacity>
+                  <Modal
+                    isVisible={this.state.isModalVisible}
+                    backdropOpacity={0.6}
+                    onBackdropPress={this._toggleModal}>
+                    <View style={styles.centeredView}>
+                      <View style={styles.modalView}>
+                        <View style={styles.text_container}>
+                          <Text style={styles.text_header}>예약자 :</Text>
+                          <Text style={styles.text}>{rowdata.name}</Text>
+                        </View>
+                        <View style={styles.text_container}>
+                          <Text style={styles.text_header}>회의실 :</Text>
+                          <Text style={styles.text}>{rowdata.roomName}</Text>
+                        </View>
+                        <View style={styles.text_container}>
+                          <Text style={styles.text_header}>예약시간 :</Text>
+                          <Text style={styles.text}>
+                            {rowdata.start} ~ {rowdata.end}
+                          </Text>
+                        </View>
+                        <View style={styles.text_container}>
+                          <Text style={styles.text_header}>이용목적 :</Text>
+                          <Text style={styles.text}>{rowdata.description}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Modal>
                 </View>
               ) : null
             ) : (
@@ -160,25 +191,16 @@ export default class TimeLine extends React.Component {
                     this.props.navigation.navigate('Booking_step3', {
                       navigation: this.props.navigation,
                       day: this.props.day,
+                      rooms: this.state.rooms,
                       roomName: this.state.roomName,
                       startTime: rowdata.id,
-                      // _setIsRefreshing: this.props._setIsRefreshing,
                     })
-                  }>
-                  {/* <Text>{rowdata.id}</Text> */}
-                </TouchableOpacity>
+                  }
+                />
               </View>
             );
           })}
         </View>
-        <Modal
-          isVisible={this.state.isModalVisible}
-          backdropOpacity={0.6}
-          onBackdropPress={this._toggleModal}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView} />
-          </View>
-        </Modal>
       </View>
     );
   }
@@ -206,7 +228,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // zIndex: 10,
     overflow: 'hidden',
-    backgroundColor: 'pink',
     borderRightWidth: 0.5,
     borderRightColor: 'lightgray',
     justifyContent: 'center',
@@ -217,10 +238,11 @@ const styles = StyleSheet.create({
   },
   modalView: {
     alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#fcfcfc',
     shadowColor: '#000',
     borderRadius: 10,
-    alignItems: 'center',
     width: wp('70%'),
     height: 150,
     shadowOffset: {
@@ -230,5 +252,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  text_container: {
+    paddingBottom: 5,
+    flexDirection: 'row',
+  },
+  text_header: {
+    flex: 1,
+    textAlign: 'right',
+  },
+  text: {
+    flex: 2,
+    paddingLeft: 5,
   },
 });

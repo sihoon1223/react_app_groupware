@@ -7,7 +7,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {format} from 'date-fns';
+import {format, addDays} from 'date-fns';
 
 LocaleConfig.locales['ko'] = {
   monthNames: [
@@ -165,7 +165,7 @@ export default class BookingResourceScreen extends React.Component {
 
   _checkDay = day => {
     const today = format(this.state.today, 'Y-MM-d');
-    console.log('today:', today);
+    //console.log('today:', today);
     if (day.dateString < today) {
       Alert.alert('Today: ' + today, '오늘 이전의 날짜 예약은 불가합니다.');
       return false;
