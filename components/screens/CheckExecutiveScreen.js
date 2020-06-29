@@ -43,22 +43,24 @@ export default class CheckExcutiveScreen extends React.Component {
     );
     const response_json = await response_state.json();
 
-    console.log(response_json);
-
     responseJson.map(data => {
+      let exec_temp = [];
       response_json.map(state => {
+        let temp_response = new Object();
         if (state.executiveState === data.state) {
-          state.value = true;
+          temp_response.executiveState = state.executiveState;
+          temp_response.value = true;
+          temp_response.no = state.no;
         } else {
-          state.value = false;
+          temp_response.executiveState = state.executiveState;
+          temp_response.value = false;
+          temp_response.no = state.no;
         }
+        exec_temp.push(temp_response);
       });
-      data.ExecState = response_json;
+      data.ExecState = exec_temp;
       this.state.exec.push(data);
-      console.log(data);
     });
-
-    //console.log(responseJson[0]);
   };
 
   _ExecutiveCardCreate = ({item}) => {

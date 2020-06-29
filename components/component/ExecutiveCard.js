@@ -49,7 +49,6 @@ export default class ExecutiveCard extends React.Component {
       isEditDescription: false,
       ChangeDescription: '',
     };
-    //console.log(this.props.ExecId);
   }
   componentDidMount() {
     lor(this);
@@ -145,7 +144,6 @@ export default class ExecutiveCard extends React.Component {
     });
 
   render() {
-    //console.log(this.state.ExecState);
     return (
       <View style={styles.card_container}>
         <View style={styles.card_user}>
@@ -275,7 +273,7 @@ export default class ExecutiveCard extends React.Component {
                               });
 
                             ExecValue[data.no - 1].value = true;
-                            console.log(this.state.checkStateNumber);
+
                             ExecValue[
                               this.state.checkStateNumber
                             ].value = false;

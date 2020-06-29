@@ -44,8 +44,6 @@ export default class UpdateExecutiveListScreen extends React.Component {
     );
     const response_json = await response_state.json();
 
-    console.log('원래', response_json);
-
     responseJson.map(data => {
       let exec_temp = [];
       response_json.map(state => {
@@ -61,19 +59,11 @@ export default class UpdateExecutiveListScreen extends React.Component {
         }
         exec_temp.push(temp_response);
       });
-      console.log('바뀜', exec_temp);
+
       data.ExecState = exec_temp;
-      console.log('넣음', data.ExecState);
 
       this.state.exec.push(data);
-
-      console.log(exec_temp.length);
     });
-
-    // console.log('결과 1: ', exec_temp[0].ExecState);
-    // console.log('결과 2: ', exec_temp[1].ExecState);
-    // console.log('결과 3: ', exec_temp[2].ExecState);
-    console.log(this.state.exec[0]);
   };
 
   _ExecutiveCardCreate = ({item}) => {
@@ -86,7 +76,7 @@ export default class UpdateExecutiveListScreen extends React.Component {
       ExecState,
       description,
     } = item;
-    console.log('???', executiveId);
+
     return (
       <View>
         <ExecutiveCard
