@@ -1,63 +1,82 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Button, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Get from '../module/Get';
 import TimeLine from '../component/TimeLine';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+const tableHead = [
+  '9:00',
+  '10:00',
+  '11:00',
+  '12:00',
+  '13:00',
+  '14:00',
+  '15:00',
+  '16:00',
+  '17:00',
+  '18:00',
+  '19:00',
+  '20:00',
+  '21:00',
+];
 
 export default class Room extends Component {
   constructor(props) {
     super(props);
+    Icon.loadFont();
     this.state = {
-      tableHead: [
-        '9:00',
-        '10:00',
-        '11:00',
-        '12:00',
-        '13:00',
-        '14:00',
-        '15:00',
-        '16:00',
-        '17:00',
-        '18:00',
-        '19:00',
-        '20:00',
-        '21:00',
-      ],
-      room: '',
+      day: this.props.day,
+      rooms: this.props.rooms,
+      bookings: [],
+      // roomsRefresh: false,
+      bookingsRefresh: false,
     };
   }
-  //get 모듈을 통해 가져온 데이터를 스테이트에 세팅
-  _dataFromChild = datas => {
-    /*
-    TODO: this.setState와 this.state.example = 'example' 의 차이가 무엇인지 명확하게 알기
-    */
-    this.setState({room: datas});
-  };
-  render() {
-    const room = this.state.room;
 
+  _dataFromChild = (dataType, datas) => {
+    this.setState({
+      [`${dataType}`]: datas,
+      [`${dataType}Refresh`]: true,
+    });
+    // console.log(',,', this.state.day, this.state.bookings);
+  };
+
+  _getRoomData = () => (
+    <Get
+      url="http://210.181.192.190:8080/api/rooms"
+      dataFromChild={this._dataFromChild}
+      dataType="rooms"
+    />
+  );
+
+  _getBookingData = () => (
+    <Get
+      url={
+        'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
+        this.props.day
+      }
+      dataFromChild={this._dataFromChild}
+      dataType="bookings"
+    />
+  );
+
+  render() {
+    const {rooms, bookings, roomsRefresh, bookingsRefresh} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.day_header}>
-          <Text style={styles.day}>{this.props.day}</Text>
+          <Text style={{fontWeight: 'bold'}}>{this.props.day}</Text>
         </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            backgroundColor: '#fcfcfc',
-          }}>
+        <View style={styles.subContainer}>
           <View style={styles.room_header}>
             <View style={styles.empty_container} />
-            <Get
-              url="http://210.181.192.190:8080/api/rooms"
-              dataFromChild={this._dataFromChild}
-            />
-            {room
-              ? room.map((item, key) => {
+            {/* {this._getRoomData()} */}
+            {rooms
+              ? rooms.map((item, key) => {
                   return (
                     <View style={styles.room_header_container} key={key}>
                       <View style={styles.room}>
@@ -71,7 +90,7 @@ export default class Room extends Component {
           <ScrollView horizontal>
             <View style={styles.main_container}>
               <View style={styles.time_header}>
-                {this.state.tableHead.map((item, key) => {
+                {tableHead.map((item, key) => {
                   return (
                     <View style={styles.time}>
                       <Text>{item}</Text>
@@ -80,15 +99,19 @@ export default class Room extends Component {
                 })}
               </View>
               <View style={styles.shedule_container}>
-                {room
-                  ? room.map((item, key) => {
+                {this._getBookingData()}
+
+                {/* {roomsRefresh && bookingsRefresh */}
+                {bookingsRefresh
+                  ? rooms.map((item, key) => {
                       return (
                         <View style={styles.shedule} key={key}>
                           <TimeLine
+                            rooms={this.state.rooms}
                             roomName={item.room_name}
                             day={this.props.day}
                             navigation={this.props.navigation}
-                            //_setIsRefreshing={this.props._setIsRefreshing}
+                            bookings={this.state.bookings}
                           />
                         </View>
                       );
@@ -108,7 +131,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fcfcfc',
   },
+  subContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#fcfcfc',
+  },
   day_header: {
+    flexDirection: 'row',
     width: wp('100%'),
     height: hp('3%'),
     alignItems: 'center',

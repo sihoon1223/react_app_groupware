@@ -90,9 +90,9 @@ const BookingNavigation = createStackNavigator(
             //     day: navigation.state.day,
             //   },
             // });
-            // console.log(navigation.state.params.day, "......");
             navigation.navigate('Booking_step3', {
               day: navigation.state.params.day,
+              rooms: navigation.state.params.rooms,
             });
           }}
           name="ios-add"

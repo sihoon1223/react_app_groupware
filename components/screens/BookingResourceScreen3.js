@@ -1,14 +1,6 @@
 import React from 'react';
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Platform,
-  ScrollView,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Platform} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Button} from 'react-native-elements';
 import {
@@ -54,7 +46,7 @@ export default class BookingResourceScreen3 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //hour: "",
+      rooms: this.props.navigation.state.params.rooms || this.props.rooms,
       _setIsRefreshing: null,
       startTime: hour[this.props.navigation.state.params.startTime] || '',
       endTime: hour[this.props.navigation.state.params.startTime + 1] || '',
@@ -65,18 +57,28 @@ export default class BookingResourceScreen3 extends React.Component {
         this.props.navigation.state.params.day.dateString ||
         this.props.navigation.state.params.day,
     };
+    console.log('BookingResourceScreen3', this.state.rooms);
   }
 
   componentDidMount() {}
 
-  render() {
-    //const day = this.props.navigation.state.params.day.dateString;
+  _makeRoomItem = () => {
+    let items = [];
 
-    //const minute = [00, 30];
-    //console.log(PickerItem);
+    this.state.rooms.map((item, index) => {
+      const room = new Object();
+      room.label = item.room_name;
+      room.value = item.room_name;
+      items.push(room);
+    });
+
+    return items;
+  };
+  render() {
     return (
-      <KeyboardAwareScrollView
-        contentContainerStyle={{flexGrow: 1, backgroundColor: 'red'}}>
+      // <KeyboardAwareScrollView
+      //   contentContainerStyle={{flexGrow: 1, backgroundColor: 'red'}}>
+      <>
         <View style={styles.day_header}>
           <Text style={styles.day}>{this.state.day}</Text>
         </View>
@@ -86,14 +88,13 @@ export default class BookingResourceScreen3 extends React.Component {
             <View style={styles.title_container}>
               <Text>회의실 선택</Text>
             </View>
-
             <View style={styles.roomPick_container_cover}>
               <View
-                style={
+                style={[
                   Platform.OS === 'ios'
                     ? pickerSelectStyles.inputIOS
-                    : pickerSelectStyles.inputAndroid
-                }>
+                    : pickerSelectStyles.inputAndroid,
+                ]}>
                 <RNPickerSelect
                   placeholder={{}}
                   onValueChange={change => {
@@ -104,16 +105,7 @@ export default class BookingResourceScreen3 extends React.Component {
                   }}
                   useNativeAndroidPickerStyle={false}
                   style={pickerSelectStyles}
-                  items={[
-                    {label: 'roomA', value: 'roomA'},
-                    {label: 'roomB', value: 'roomB'},
-                    {label: 'roomC', value: 'roomC'},
-                    {label: 'roomD', value: 'roomD'},
-                    {label: 'roomE', value: 'roomE'},
-                    {label: 'roomF', value: 'roomF'},
-                    {label: 'roomG', value: 'roomG'},
-                    {label: 'roomH', value: 'roomH'},
-                  ]}
+                  items={this._makeRoomItem()}
                   value={this.state.roomName}
                 />
               </View>
@@ -244,7 +236,8 @@ export default class BookingResourceScreen3 extends React.Component {
             </View>
           </View>
         </View>
-      </KeyboardAwareScrollView>
+      </>
+      // </KeyboardAwareScrollView>
     );
   }
 }
