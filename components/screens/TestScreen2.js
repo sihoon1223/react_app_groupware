@@ -5,11 +5,15 @@ import {
   findNodeHandle,
   NativeModules,
   Platform,
+  Button,
   PermissionsAndroid,
   View,
+  StyleSheet,
 } from 'react-native';
+import NavigationHeader from '../component/NavigationHeader';
+import MapSearchHeader from '../component/MapSearchHeader';
 //import Geolocation from 'react-native-geolocation-service';
-import Geolocation from '@react-native-community/geolocation';
+//import Geolocation from '@react-native-community/geolocation';
 let REST_API_KEY = '';
 const DaumMapManager =
   Platform.OS === 'ios'
@@ -31,13 +35,14 @@ export default class TestScreen2 extends Component {
 
     this.state = {
       permissionGranted: false,
-      ios_latitude: '',
-      ios_longitude: '',
+      //ios_latitude: '',
+      //ios_longitude: '',
     };
   }
 
   // 현재 디바이스의 위치 권한 여부 검사
   async componentDidMount() {
+    console.log('componentDidMount');
     if (Platform.OS === 'android') {
       try {
         const granted = await PermissionsAndroid.request(
@@ -85,60 +90,74 @@ export default class TestScreen2 extends Component {
   }
 
   render() {
+    console.log('render');
     if (this.state.permissionGranted) {
       return (
-        <DaumMap
-          {...this.props}
-          latitude={this.state.ios_latitude}
-          longitude={this.state.ios_longitude}
-          style={[{width: '100%', height: '100%'}, this.props.style]}
-          ref={ref => {
-            this.map = ref;
-          }}
-          onMarkerSelect={this._onMarkerSelect}
-          onMarkerPress={this._onMarkerPress}
-          onMarkerMoved={this._onMarkerMoved}
-          onRegionChange={this._onRegionChange}
-          onUpdateCurrentLocation={this._onUpdateCurrentLocation}
-          onUpdateCurrentHeading={this._onUpdateCurrentHeading}
-        />
+        <View style={styles.container}>
+          <MapSearchHeader navigation={this.props.navigation} />
+          <Button title="현재위치" />
+          <DaumMap
+            {...this.props}
+            //latitude={this.state.ios_latitude}
+            //longitude={this.state.ios_longitude}
+            style={[{width: '100%', height: '100%'}, this.props.style]}
+            ref={(ref) => {
+              this.map = ref;
+            }}
+            onMarkerSelect={this._onMarkerSelect}
+            onMarkerPress={this._onMarkerPress}
+            onMarkerMoved={this._onMarkerMoved}
+            onRegionChange={this._onRegionChange}
+            onUpdateCurrentLocation={this._onUpdateCurrentLocation}
+            onUpdateCurrentHeading={this._onUpdateCurrentHeading}
+          />
+
+          {/* <View style={{position: 'absolute'}}>
+            <MapSearchHeader />
+          </View> */}
+        </View>
       );
     } else {
       return <View style={{flex: 1}}>{this.props.permissionDeniedView}</View>;
     }
   }
 
-  _onMarkerSelect = event => {
+  _onMarkerSelect = (event) => {
     if (this.props.onMarkerSelect != undefined) {
       this.props.onMarkerSelect(event.nativeEvent);
     }
   };
 
-  _onMarkerPress = event => {
+  _onMarkerPress = (event) => {
     if (this.props.onMarkerPress != undefined) {
       this.props.onMarkerPress(event.nativeEvent);
     }
   };
 
-  _onMarkerMoved = event => {
+  _onMarkerMoved = (event) => {
     if (this.props.onMarkerMoved != undefined) {
       this.props.onMarkerMoved(event.nativeEvent);
     }
   };
 
-  _onRegionChange = event => {
+  _onRegionChange = (event) => {
     if (this.props.onRegionChange != undefined) {
       this.props.onRegionChange(event.nativeEvent);
     }
   };
 
-  _onUpdateCurrentLocation = event => {
+  _onUpdateCurrentLocation = (event) => {
+    console.log(
+      '_onUpdateCurrentLocation호출/ location 값:',
+      this.props.onUpdateCurrentLocation,
+    );
+
     if (this.props.onUpdateCurrentLocation != undefined) {
       this.props.onUpdateCurrentLocation(event.nativeEvent);
     }
   };
 
-  _onUpdateCurrentHeading = event => {
+  _onUpdateCurrentHeading = (event) => {
     if (this.props.onUpdateCurrentHeading != undefined) {
       this.props.onUpdateCurrentHeading(event.nativeEvent);
     }
@@ -163,12 +182,12 @@ export default class TestScreen2 extends Component {
   // https://developers.kakao.com/docs/restapi/local#주소-검색
   static serachAddress(query, page = 1, size = 10) {
     if (REST_API_KEY == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: 'Daum Rest API Key가 필요합니다.'});
       });
     }
     if (query == undefined || query == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '검색할 주소를 입력 해 주세요.'});
       });
     }
@@ -183,6 +202,23 @@ export default class TestScreen2 extends Component {
     return requestDaumAPI(url, option);
   }
 
+  componentDidUpdate() {
+    console.log('componentDidUpdate');
+    this.clearMapCache;
+  }
+
+  componentWillMount() {
+    console.log('componentWillMount');
+  }
+
+  componentWillUnmount() {
+    console.log('componentWillUnmount');
+  }
+
+  // shouldComponentUpdate() {
+  //   console.log('shouldComponentUpdate');
+  // }
+
   // 좌표 → 행정구역정보 변환
   // https://developers.kakao.com/docs/restapi/local#좌표-행정구역정보-변환
   static getCoordToRegionArea(
@@ -193,17 +229,17 @@ export default class TestScreen2 extends Component {
     lang = 'ko',
   ) {
     if (REST_API_KEY == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: 'Daum Rest API Key가 필요합니다.'});
       });
     }
     if (latitude == undefined || latitude == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '위도 값을 입력 해 주세요.'});
       });
     }
     if (longitude == undefined || longitude == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '경도 값을 입력 해 주세요.'});
       });
     }
@@ -224,17 +260,17 @@ export default class TestScreen2 extends Component {
   // https://developers.kakao.com/docs/restapi/local#좌표-주소-변환
   static getCoordToAddress(latitude, longitude, input_coord = 'WGS84') {
     if (REST_API_KEY == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: 'Daum Rest API Key가 필요합니다.'});
       });
     }
     if (latitude == undefined || latitude == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '위도 값을 입력 해 주세요.'});
       });
     }
     if (longitude == undefined || longitude == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '경도 값을 입력 해 주세요.'});
       });
     }
@@ -258,17 +294,17 @@ export default class TestScreen2 extends Component {
     output_coord = 'WGS84',
   ) {
     if (REST_API_KEY == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: 'Daum Rest API Key가 필요합니다.'});
       });
     }
     if (latitude == undefined || latitude == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '위도 값을 입력 해 주세요.'});
       });
     }
     if (longitude == undefined || longitude == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '경도 값을 입력 해 주세요.'});
       });
     }
@@ -297,12 +333,12 @@ export default class TestScreen2 extends Component {
     sort = 'accuracy',
   ) {
     if (REST_API_KEY == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: 'Daum Rest API Key가 필요합니다.'});
       });
     }
     if (query == undefined || query == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '검색어를 입력 해 주세요.'});
       });
     }
@@ -335,7 +371,7 @@ export default class TestScreen2 extends Component {
         params.radius = radius;
       }
     } else {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '반경 거리는 20km 이내로 해 주세요.'});
       });
     }
@@ -358,17 +394,17 @@ export default class TestScreen2 extends Component {
     sort = 'accuracy',
   ) {
     if (REST_API_KEY == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: 'Daum Rest API Key가 필요합니다.'});
       });
     }
     if (category == undefined || category == '') {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '카테고리를 입력 해 주세요.'});
       });
     }
     if (latitude == undefined || longitude == undefined) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '위경도를 입력 해 주세요.'});
       });
     }
@@ -394,7 +430,7 @@ export default class TestScreen2 extends Component {
         params.radius = radius;
       }
     } else {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         reject({message: '반경 거리는 20km 이내로 해 주세요.'});
       });
     }
@@ -433,21 +469,21 @@ function makeRequestURL(url, params) {
 }
 
 function requestDaumAPI(url, option) {
-  return new Promise(function(success, failed) {
+  return new Promise(function (success, failed) {
     var errorFlag = false;
 
     fetch('https://dapi.kakao.com/v2/local/' + url, option)
-      .then(response => {
+      .then((response) => {
         if (response.status == 200) {
           return response.json();
         } else {
           failed({message: 'Server request error'});
         }
       })
-      .then(responseJson => {
+      .then((responseJson) => {
         if (!errorFlag) success(responseJson);
       })
-      .catch(error => {
+      .catch((error) => {
         errorFlag = true;
         failed(error);
       });
@@ -472,3 +508,10 @@ TestScreen2.defaultProps = {
   PermissionsAndroidTitle: '권한 요청',
   PermissionsAndroidMessage: '지도 표시를 위해 권한을 허용 해 주세요.',
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fcfcfc',
+  },
+});

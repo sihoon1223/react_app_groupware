@@ -1,67 +1,53 @@
-import React from "react";
+import React from 'react';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 
-import { StyleSheet, View, Text, Button } from "react-native";
-import NavigationHeader from "../component/NavigationHeader";
+import NavigationHeader from '../component/NavigationHeader';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+} from 'react-native-responsive-screen';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {format} from 'date-fns';
 
-import {
-  Calendar,
-  LocaleConfig,
-  CalendarList,
-  Agenda,
-} from "react-native-calendars";
-LocaleConfig.locales["ko"] = {
+LocaleConfig.locales['ko'] = {
   monthNames: [
-    "1월",
-    "2월",
-    "3월",
-    "4월",
-    "5월",
-    "6월",
-    "7월",
-    "8월",
-    "9월",
-    "10월",
-    "11월",
-    "12월",
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
   ],
-  monthNamesShort: [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-  ],
+
   dayNames: [
-    "일요일",
-    "월요일",
-    "화요일",
-    "수요일",
-    "목요일",
-    "금요일",
-    "토요일",
+    '일요일',
+    '월요일',
+    '화요일',
+    '수요일',
+    '목요일',
+    '금요일',
+    '토요일',
   ],
-  dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
-  today: "오늘은",
+  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+  today: '오늘은',
 };
-LocaleConfig.defaultLocale = "ko";
-const vacation = { key: "vacation", color: "red", selectedDotColor: "blue" };
-const massage = { key: "massage", color: "blue", selectedDotColor: "blue" };
-const workout = { key: "workout", color: "green" };
+LocaleConfig.defaultLocale = 'ko';
+const vacation = {key: 'vacation', color: 'red', selectedDotColor: 'blue'};
+const massage = {key: 'massage', color: 'blue', selectedDotColor: 'blue'};
+const workout = {key: 'workout', color: 'green'};
 
 export default class BookingResourceScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      today: new Date(),
+    };
   }
 
   render() {
@@ -72,47 +58,45 @@ export default class BookingResourceScreen extends React.Component {
           <Text style={styles.text}>회의실을 예약할 날짜를 선택해주세요.</Text>
           <Calendar
             style={{
-              width: wp("80%"),
-              // height: wp("80%"),
+              width: wp('80%'),
               borderWidth: 1,
-              borderColor: "#e6e0e0",
-              //backgroundColor: "#cdcdcd",
+              borderColor: '#e6e0e0',
             }}
             // Specify theme properties to override specific styles for calendar parts. Default = {}
             theme={{
-              "stylesheet.calendar.header": {
+              'stylesheet.calendar.header': {
                 week: {
                   marginTop: 5,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
                 },
               },
               //backgroundColor: "#ffffff",
               //calendarBackground: "#ffffff",
-              textSectionTitleColor: "#b6c1cd", //월화수목금토일 색상
+              textSectionTitleColor: '#b6c1cd', //월화수목금토일 색상
               //selectedDayBackgroundColor: "red",
-              selectedDayTextColor: "#ffffff", ////선택된 날짜 색깔
-              todayTextColor: "#00adf5", //오늘의 날짜 색깔
-              dayTextColor: "#2d4150", //전체 날짜 색깔
-              textDisabledColor: "#d9e1e8", //disable (이전 달의 끝 날짜 등) 날짜 색깔
-              dotColor: "#00adf5",
-              selectedDotColor: "#ffffff",
-              arrowColor: "#00adf5",
+              selectedDayTextColor: '#ffffff', ////선택된 날짜 색깔
+              todayTextColor: '#00adf5', //오늘의 날짜 색깔
+              dayTextColor: '#2d4150', //전체 날짜 색깔
+              textDisabledColor: '#d9e1e8', //disable (이전 달의 끝 날짜 등) 날짜 색깔
+              dotColor: '#00adf5',
+              selectedDotColor: '#ffffff',
+              arrowColor: '#00adf5',
               //disabledArrowColor: "red",
               //monthTextColor: "blue",
               //indicatorColor: "blue",
               // textDayFontFamily: "monospace",
               // textMonthFontFamily: "monospace",
               // textDayHeaderFontFamily: "monospace",
-              textDayFontWeight: "300",
-              textMonthFontWeight: "bold",
-              textDayHeaderFontWeight: "300",
+              textDayFontWeight: '300',
+              textMonthFontWeight: 'bold',
+              textDayHeaderFontWeight: '300',
               textDayFontSize: 16,
               textMonthFontSize: 16,
               textDayHeaderFontSize: 16,
             }}
             // Initially visible month. Default = Date()
-            current={"2020-05-26"}
+            // current={'2020-05-26'}
             // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
             //minDate={"2000-01-01"}
             // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
@@ -130,24 +114,25 @@ export default class BookingResourceScreen extends React.Component {
             //   "2020-05-18": { marked: true, dotColor: "red", activeOpacity: 0 },
             //   //"2020-05-19": { disabled: true, disableTouchEvent: true },
             // }}
-            markingType={"multi-dot"}
+            markingType={'multi-dot'}
             // Handler which gets executed on day press. Default = undefined
-            onDayPress={(day) => {
-              //console.log("selected day", day);
-              this.props.navigation.navigate("Booking_step2", {
-                day: day,
-                navigation: this.props.navigation,
-              });
+            onDayPress={day => {
+              if (this._checkDay(day)) {
+                this.props.navigation.navigate('Booking_step2', {
+                  day: day,
+                  navigation: this.props.navigation,
+                });
+              }
             }}
             // Handler which gets executed on day long press. Default = undefined
-            onDayLongPress={(day) => {
-              console.log("selected day", day);
+            onDayLongPress={day => {
+              console.log('selected day', day);
             }}
             // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-            monthFormat={"yyyy년, MM월"}
+            monthFormat={'yyyy년, MM월'}
             // Handler which gets executed when visible month changes in calendar. Default = undefined
-            onMonthChange={(month) => {
-              console.log("month changed", month);
+            onMonthChange={month => {
+              console.log('month changed', month);
             }}
             // Hide month navigation arrows. Default = false
             hideArrows={false}
@@ -165,9 +150,9 @@ export default class BookingResourceScreen extends React.Component {
             // Show week numbers to the left. Default = false
             showWeekNumbers={false}
             // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-            onPressArrowLeft={(substractMonth) => substractMonth()}
+            onPressArrowLeft={substractMonth => substractMonth()}
             // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-            onPressArrowRight={(addMonth) => addMonth()}
+            onPressArrowRight={addMonth => addMonth()}
             // Disable left arrow. Default = false
             disableArrowLeft={false}
             // Disable right arrow. Default = false
@@ -177,20 +162,30 @@ export default class BookingResourceScreen extends React.Component {
       </View>
     );
   }
+
+  _checkDay = day => {
+    const today = format(this.state.today, 'Y-MM-d');
+    console.log('today:', today);
+    if (day.dateString < today) {
+      Alert.alert('Today: ' + today, '오늘 이전의 날짜 예약은 불가합니다.');
+      return false;
+    }
+    return true;
+  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fcfcfc",
+    backgroundColor: '#fcfcfc',
   },
   text: {
-    paddingBottom: hp("3%"),
-    fontWeight: "300",
+    paddingBottom: hp('3%'),
+    fontWeight: '300',
   },
   calendar_container: {
     flex: 1,
-    alignItems: "center",
-    paddingTop: hp("5%"),
+    alignItems: 'center',
+    paddingTop: hp('5%'),
   },
 });

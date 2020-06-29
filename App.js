@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 
 import LoadingScreen from './components/screens/LoadingScreen';
 import MainStack from './components/navigation/MainStack';
 
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,12 +15,12 @@ class App extends React.Component {
       this.setState({isLoading: false});
     }, 500);
   }
+
   render() {
     const {isLoading} = this.state;
     return (
       <View style={styles.container}>
         <SafeAreaView style={{flex: 1}}>
-          {/* {Platform.OS === "ios" ? <View style={styles.statusBar} /> : <></>} */}
           <View style={styles.statusBar} />
           {isLoading ? <LoadingScreen /> : <MainStack />}
         </SafeAreaView>
@@ -35,6 +28,7 @@ class App extends React.Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -42,7 +36,5 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     backgroundColor: '#fcfcfc',
-    //height: Constants.statusBarHeight,
   },
 });
-export default App;
