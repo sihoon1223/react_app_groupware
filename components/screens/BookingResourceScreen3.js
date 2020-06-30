@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {StyleSheet, View, Text, TextInput, Platform} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Platform, Alert} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Button} from 'react-native-elements';
 import {
@@ -48,16 +48,17 @@ export default class BookingResourceScreen3 extends React.Component {
     this.state = {
       rooms: this.props.navigation.state.params.rooms || this.props.rooms,
       _setIsRefreshing: null,
-      startTime: hour[this.props.navigation.state.params.startTime] || '',
-      endTime: hour[this.props.navigation.state.params.startTime + 1] || '',
-      roomName: this.props.navigation.state.params.roomName || '',
+      startTime: hour[this.props.navigation.state.params.startTime] || '09:30',
+      endTime:
+        hour[this.props.navigation.state.params.startTime + 1] || '09:30',
+      roomName: this.props.navigation.state.params.roomName || '회의실 7A',
+      reservedName: '김시훈',
+      reservedId: 'kskk96',
       description: '',
-      reserver: '',
       day:
         this.props.navigation.state.params.day.dateString ||
         this.props.navigation.state.params.day,
     };
-    console.log('BookingResourceScreen3', this.state.rooms);
   }
 
   componentDidMount() {}
@@ -74,6 +75,71 @@ export default class BookingResourceScreen3 extends React.Component {
 
     return items;
   };
+
+  _postBooking = () => {
+    const url = 'http://210.181.192.190:8080/api/bookings';
+
+    let options = {
+      method: 'POST',
+      headers: {
+        // Accept: 'application/json',
+        // 'Content-Type': 'application/json;charset=UTF-8',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        bookingDay: this.state.day,
+        description: this.state.description,
+        endTime: this.state.endTime,
+        reservedId: this.state.reservedId,
+        reservedName: this.state.reservedName,
+        roomName: this.state.roomName,
+        startTime: this.state.startTime,
+      }),
+    };
+
+    console.log(',,;', options.body);
+
+    fetch(url, options)
+      .then(response => response.json())
+      .then(response_json => {
+        console.log('res:', response_json);
+
+        if (response_json.errorCode === '') {
+          Alert.alert('회의실 예약 완료');
+          this.props.navigation.navigate('Booking_step2', {isRefreshing: true});
+        } else {
+          Alert.alert(response_json.message);
+        }
+      });
+
+    console.log('fetch 끝');
+  };
+
+  _checkTime = () => {
+    // console.log(
+    //   '예약정보:',
+    //   this.state.startTime,
+    //   '~',
+    //   this.state.endTime,
+    //   this.state.roomName,
+    //   this.state.description,
+    // );
+    let startTime = this.state.startTime.split(':');
+    let endTime = this.state.endTime.split(':');
+    if (startTime[0] > endTime[0]) {
+      return Alert.alert(
+        '선택한 시간 오류',
+        '종료시간이 시작시간보다 빠를 수 없습니다.',
+      );
+    } else if (startTime[0] === endTime[0] && startTime[1] >= endTime[1]) {
+      return Alert.alert(
+        '선택한 시간 오류',
+        '종료시간이 시작시간보다 빠를 수 없습니다.',
+      );
+    }
+    return this._postBooking();
+  };
+
   render() {
     return (
       // <KeyboardAwareScrollView
@@ -98,7 +164,6 @@ export default class BookingResourceScreen3 extends React.Component {
                 <RNPickerSelect
                   placeholder={{}}
                   onValueChange={change => {
-                    // console.log(change);
                     this.setState({
                       roomName: change,
                     });
@@ -204,25 +269,7 @@ export default class BookingResourceScreen3 extends React.Component {
               <Button
                 title="예약하기"
                 onPress={() => {
-                  console.log(
-                    this.state.startTime,
-                    this.state.endTime,
-                    this.state.roomName,
-                    this.state.description,
-                  );
-                  let startTime = this.state.startTime.split(':');
-                  let endTime = this.state.endTime.split(':');
-                  if (startTime[0] > endTime[0]) {
-                    console.log('fail');
-                    return;
-                  } else if (
-                    startTime[0] === endTime[0] &&
-                    startTime[1] >= endTime[1]
-                  ) {
-                    console.log('fail');
-                    return;
-                  }
-                  console.log('success');
+                  this._checkTime();
                 }}
               />
               <Button

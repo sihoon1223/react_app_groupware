@@ -93,6 +93,7 @@ const BookingNavigation = createStackNavigator(
             navigation.navigate('Booking_step3', {
               day: navigation.state.params.day,
               rooms: navigation.state.params.rooms,
+              // navigation: navigation,
             });
           }}
           name="ios-add"

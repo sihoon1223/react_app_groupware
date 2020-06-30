@@ -12,9 +12,16 @@ export default class BookingResourceScreen2 extends React.Component {
       rooms: [],
       isLoading: false,
     };
+
+    console.log('constructor');
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount');
   }
 
   render() {
+    console.log('render');
     return (
       <View style={styles.container}>
         {this._getRoomData()}
@@ -30,6 +37,7 @@ export default class BookingResourceScreen2 extends React.Component {
   }
 
   _dataFromChild = (dataType, datas) => {
+    console.log('_dataFromChild');
     this.setState({
       [`${dataType}`]: datas,
       isLoading: true,
@@ -40,14 +48,17 @@ export default class BookingResourceScreen2 extends React.Component {
     });
   };
 
-  _getRoomData = () => (
-    <Get
-      url="http://210.181.192.190:8080/api/rooms"
-      dataFromChild={this._dataFromChild}
-      dataType="rooms"
-    />
-  );
+  _getRoomData = () => {
+    return (
+      <Get
+        url="http://210.181.192.190:8080/api/rooms"
+        dataFromChild={this._dataFromChild}
+        dataType="rooms"
+      />
+    );
+  };
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

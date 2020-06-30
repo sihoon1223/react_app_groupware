@@ -8,7 +8,7 @@ class Get extends Component {
     this.state = {
       url: this.props.url,
     };
-    //console.log('호출', this.props.dataType);
+    console.log('Get - constructor', this.props.dataType);
   }
 
   componentDidMount() {
@@ -16,6 +16,7 @@ class Get extends Component {
   }
 
   getData = async () => {
+    console.log('Get - getData');
     try {
       const response = await fetch(this.state.url);
       const responseJson = await response.json();
@@ -27,6 +28,7 @@ class Get extends Component {
     }
   };
   render() {
+    console.log('Get - render');
     return null;
   }
 }
