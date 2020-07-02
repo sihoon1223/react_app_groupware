@@ -2,60 +2,49 @@ import React from 'react';
 
 import {StyleSheet, View} from 'react-native';
 import Room from '../component/Room';
-import Get from '../module/Get';
-
+import LoadingScreen from './LoadingScreen';
+import {ThemeConsumer} from 'react-native-elements';
 export default class BookingResourceScreen2 extends React.Component {
   constructor(props) {
     super(props);
+    //console.log('BRS2 - constructor');
     this.state = {
       day: this.props.navigation.state.params.day.dateString,
       rooms: [],
-      isLoading: false,
+      isExistData: false,
     };
-
-    console.log('constructor');
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
+    //console.log('BRS2 - componentDidMount');
+    this._getRooms();
   }
 
   render() {
-    console.log('render');
+    const {isExistData, day, rooms} = this.state;
+    //console.log('BRS2 - render');
+
     return (
+      // null 부분에 데이터 불러올때 인디케이터를 띄운다던가,, 로딩뷰를 띄우기
       <View style={styles.container}>
-        {this._getRoomData()}
-        {this.state.isLoading ? (
-          <Room
-            day={this.state.day}
-            rooms={this.state.rooms}
-            navigation={this.props.navigation}
-          />
+        {isExistData ? (
+          <Room day={day} rooms={rooms} navigation={this.props.navigation} />
         ) : null}
       </View>
     );
   }
 
-  _dataFromChild = (dataType, datas) => {
-    console.log('_dataFromChild');
+  _getRooms = async () => {
+    //console.log('BRS2 - _getRooms');
+    const response = await fetch('http://210.181.192.190:8080/api/rooms');
+    const json = await response.json();
     this.setState({
-      [`${dataType}`]: datas,
-      isLoading: true,
+      rooms: json,
+      isExistData: true,
     });
-
     this.props.navigation.setParams({
       rooms: this.state.rooms,
     });
-  };
-
-  _getRoomData = () => {
-    return (
-      <Get
-        url="http://210.181.192.190:8080/api/rooms"
-        dataFromChild={this._dataFromChild}
-        dataType="rooms"
-      />
-    );
   };
 }
 

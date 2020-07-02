@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Get from '../module/Get';
+
 import TimeLine from '../component/TimeLine';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -27,65 +27,75 @@ const tableHead = [
 export default class Room extends Component {
   constructor(props) {
     super(props);
+    //console.log('Room - constructor');
     Icon.loadFont();
     this.state = {
       day: this.props.day,
       rooms: this.props.rooms,
       bookings: [],
-      // roomsRefresh: false,
-      bookingsRefresh: false,
+      isExistData: false,
     };
   }
 
-  _dataFromChild = (dataType, datas) => {
+  componentDidMount() {
+    //console.log('Room - componentDidMount');
+    this._getBookings();
+
+    this.focusListener = [
+      this.props.navigation.addListener('didFocus', () => {
+        this._getBookings();
+      }),
+    ];
+  }
+
+  componentWillUnmount() {
+    //console.log('Room - componentWillUnMount', this.focusListener);
+    this.focusListener.forEach(item => item.remove());
+  }
+
+  _getBookings = async () => {
+    //console.log('Room - _getBookings');
+    const day = this.state.day;
+    const response = await fetch(
+      'http://210.181.192.190:8080/api/bookings/search?bookingDay=' + day,
+    );
+    const json = await response.json();
     this.setState({
-      [`${dataType}`]: datas,
-      [`${dataType}Refresh`]: true,
+      bookings: json,
+      isExistData: true,
     });
-    // console.log(',,', this.state.day, this.state.bookings);
   };
 
-  _getRoomData = () => (
-    <Get
-      url="http://210.181.192.190:8080/api/rooms"
-      dataFromChild={this._dataFromChild}
-      dataType="rooms"
-    />
-  );
-
-  _getBookingData = () => (
-    <Get
-      url={
-        'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
-        this.props.day
-      }
-      dataFromChild={this._dataFromChild}
-      dataType="bookings"
-    />
-  );
-
   render() {
-    const {rooms, bookings, roomsRefresh, bookingsRefresh} = this.state;
+    const {rooms, bookings, isExistData, day} = this.state;
+    // console.log('Room - render');
+    // console.log('bookings:', bookings);
     return (
       <View style={styles.container}>
         <View style={styles.day_header}>
-          <Text style={{fontWeight: 'bold'}}>{this.props.day}</Text>
+          <Text
+            style={{fontWeight: 'bold'}}
+            onPress={() => {
+              console.log('clicked');
+              this.setState({
+                day: '2020-07-04',
+              });
+            }}>
+            {day}
+          </Text>
         </View>
         <View style={styles.subContainer}>
           <View style={styles.room_header}>
             <View style={styles.empty_container} />
-            {/* {this._getRoomData()} */}
-            {rooms
-              ? rooms.map((item, key) => {
-                  return (
-                    <View style={styles.room_header_container} key={key}>
-                      <View style={styles.room}>
-                        <Text>{item.room_name}</Text>
-                      </View>
-                    </View>
-                  );
-                })
-              : null}
+            {rooms.map((item, key) => {
+              return (
+                <View style={styles.room_header_container} key={key}>
+                  <View style={styles.room}>
+                    <Text>{item.room_name}</Text>
+                  </View>
+                </View>
+              );
+            })}
           </View>
           <ScrollView horizontal>
             <View style={styles.main_container}>
@@ -99,19 +109,16 @@ export default class Room extends Component {
                 })}
               </View>
               <View style={styles.shedule_container}>
-                {this._getBookingData()}
-
-                {/* {roomsRefresh && bookingsRefresh */}
-                {bookingsRefresh
+                {isExistData
                   ? rooms.map((item, key) => {
                       return (
                         <View style={styles.shedule} key={key}>
                           <TimeLine
-                            rooms={this.state.rooms}
+                            rooms={rooms}
+                            bookings={bookings}
                             roomName={item.room_name}
-                            day={this.props.day}
+                            day={day}
                             navigation={this.props.navigation}
-                            bookings={this.state.bookings}
                           />
                         </View>
                       );

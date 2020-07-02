@@ -97,33 +97,27 @@ export default class BookingResourceScreen3 extends React.Component {
       }),
     };
 
-    console.log(',,;', options.body);
-
     fetch(url, options)
       .then(response => response.json())
       .then(response_json => {
-        console.log('res:', response_json);
-
         if (response_json.errorCode === '') {
           Alert.alert('회의실 예약 완료');
-          this.props.navigation.navigate('Booking_step2', {isRefreshing: true});
+          this.props.navigation.navigate('Booking_step2', {isRefresh: true});
         } else {
           Alert.alert(response_json.message);
         }
       });
-
-    console.log('fetch 끝');
   };
 
   _checkTime = () => {
-    // console.log(
-    //   '예약정보:',
-    //   this.state.startTime,
-    //   '~',
-    //   this.state.endTime,
-    //   this.state.roomName,
-    //   this.state.description,
-    // );
+    /*console.log(
+      '예약정보:',
+      this.state.startTime,
+      '~',
+      this.state.endTime,
+      this.state.roomName,
+      this.state.description,
+    );*/
     let startTime = this.state.startTime.split(':');
     let endTime = this.state.endTime.split(':');
     if (startTime[0] > endTime[0]) {
