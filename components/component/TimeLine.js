@@ -67,10 +67,11 @@ export default class TimeLine extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     //console.log('TimeLine - getDerivedStateFromProps');
+
     if (nextProps.bookings !== prevState.bookings) {
       return {
         bookings: nextProps.bookings,
-        isRefresh: nextProps.navigation.state.params.isRefresh,
+        isRefresh: true,
       };
     } else {
       return {
@@ -86,7 +87,7 @@ export default class TimeLine extends React.Component {
   }
 
   _clearTimeData = () => {
-    console.log('_clearTimeData');
+    //console.log('_clearTimeData');
     const tempBlock = [];
     for (let i = 0; i < 26; i++) {
       tempBlock.push({
@@ -167,7 +168,7 @@ export default class TimeLine extends React.Component {
   };
 
   _toggleModal = rowdata => {
-    console.log('rowData:', rowdata.start);
+    //console.log('rowData:', rowdata.start);
     this.state.isModalVisible
       ? this.setState({
           isModalVisible: false,
@@ -218,13 +219,13 @@ export default class TimeLine extends React.Component {
                           rowdata.name +
                           ')'}
 
-                        {console.log(
+                        {/* {console.log(
                           '텍스트:',
                           rowdata.id,
                           rowdata.start,
                           '~',
                           rowdata.end,
-                        )}
+                        )} */}
                       </Text>
                     </TouchableOpacity>
                   </View>

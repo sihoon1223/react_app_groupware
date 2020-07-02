@@ -40,7 +40,6 @@ export default class Room extends Component {
       day: this.props.day,
       rooms: this.props.rooms,
       bookings: [],
-      booking
       isExistData: false,
     };
     //console.log('room 에서 create', this.props.day);
@@ -63,6 +62,30 @@ export default class Room extends Component {
     this.focusListener.forEach(item => item.remove());
   }
 
+  _clickArrowButton = value => {
+    //console.log('123124123123124', this.state.bookingsRefresh);
+    //this.setState({bookingsRefresh: false});
+    const today = this.state.day;
+    const tempday = new Date(today);
+    console.log(this.state.day);
+    tempday.setDate(tempday.getDate() + value);
+
+    //console.log(tempday.toISOString().substr(0, 10));
+    //this.state._setChangeDay(tempday.toISOString().substr(0, 10));
+
+    // this.setState({
+    //   day: tempday.toISOString().substr(0, 10),
+    // });
+
+    this.state.day = tempday.toISOString().substr(0, 10);
+    console.log(this.state.day);
+    console.log('getBooking before');
+    this._getBookings();
+    console.log('getBooking after');
+    //console.log('함수 부른거 맞음?');
+    //console.log(this.state.bookings);
+  };
+
   _getBookings = async () => {
     //console.log('Room - _getBookings');
     const day = this.state.day;
@@ -83,16 +106,17 @@ export default class Room extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.day_header}>
-          <Text
-            style={{fontWeight: 'bold'}}
-            onPress={() => {
-              console.log('clicked');
-              this.setState({
-                day: '2020-07-04',
-              });
-            }}>
-            {day}
-          </Text>
+          <Icon
+            name="md-arrow-dropleft"
+            style={{fontSize: 25, marginRight: 5}}
+            onPress={() => this._clickArrowButton(-1)}
+          />
+          <Text style={{fontWeight: 'bold'}}>{day}</Text>
+          <Icon
+            name="md-arrow-dropright"
+            style={{fontSize: 25, marginLeft: 5}}
+            onPress={() => this._clickArrowButton(1)}
+          />
         </View>
         <View style={styles.subContainer}>
           <View style={styles.room_header}>
