@@ -43,7 +43,6 @@ export default class Room extends Component {
       isExistData: false,
     };
     //console.log('room 에서 create', this.props.day);
-    console.log('Room Constructor Create');
   }
 
   componentDidMount() {
@@ -136,7 +135,7 @@ export default class Room extends Component {
               <View style={styles.time_header}>
                 {tableHead.map((item, key) => {
                   return (
-                    <View style={styles.time}>
+                    <View style={styles.time} key={key}>
                       <Text>{item}</Text>
                     </View>
                   );

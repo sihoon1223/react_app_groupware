@@ -200,7 +200,7 @@ export default class TimeLine extends React.Component {
             {timedata.map((rowdata, index) => {
               return rowdata.check ? (
                 rowdata.isStart ? (
-                  <View>
+                  <View key={index}>
                     <TouchableOpacity
                       onPress={() => this._toggleModal(rowdata)}
                       key={index}
@@ -231,7 +231,7 @@ export default class TimeLine extends React.Component {
                   </View>
                 ) : null
               ) : (
-                <View>
+                <View key={index}>
                   <TouchableOpacity
                     key={index}
                     style={styles.timeblock}

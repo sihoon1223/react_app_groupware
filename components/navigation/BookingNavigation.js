@@ -44,7 +44,7 @@ const BookingNavigation = createStackNavigator(
       screen: BookingResourceScreen3,
       navigationOptions: {
         title: '회의실 예약',
-        headerRight: null,
+        headerRight: () => null,
       },
     },
   },

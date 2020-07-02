@@ -165,8 +165,7 @@ export default class BookingResourceScreen extends React.Component {
 
   _checkDay = day => {
     const today = format(this.state.today, 'yyyy-MM-dd');
-    //console.log('today:', today);
-    console.log(day.dateString);
+
     if (day.dateString < today) {
       Alert.alert('Today: ' + today, '오늘 이전의 날짜 예약은 불가합니다.');
       return false;
