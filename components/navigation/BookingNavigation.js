@@ -22,6 +22,7 @@ import {
 import BookingResourceScreen from '../screens/BookingResourceScreen';
 import BookingResourceScreen2 from '../screens/BookingResourceScreen2';
 import BookingResourceScreen3 from '../screens/BookingResourceScreen3';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 Ionicons.loadFont();
 
@@ -51,6 +52,7 @@ const BookingNavigation = createStackNavigator(
     defaultNavigationOptions: ({navigation}) => ({
       //headerBackTitleVisible: false, // back button title 제거 (ios)
       headerBackTitle: '이전', //ios에서만 적용됨
+
       headerTitleAlign: 'center',
       //animationEnabled: false, //애니메이션 제거
       headerStyle: {
@@ -79,7 +81,7 @@ const BookingNavigation = createStackNavigator(
               : hp('3.5%')
             : 0,
       },
-      headerRight: (
+      headerRight: () => (
         <Ionicons
           onPress={() => {
             //console.log("*", navigation);
@@ -93,6 +95,7 @@ const BookingNavigation = createStackNavigator(
             navigation.navigate('Booking_step3', {
               day: navigation.state.params.day,
               rooms: navigation.state.params.rooms,
+              // navigation: navigation,
             });
           }}
           name="ios-add"

@@ -1,32 +1,96 @@
 import React from 'react';
 
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import Get from '../module/Get';
-
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Modal from 'react-native-modal';
 
-const blockColor = ['red', 'pink', 'yellow', 'lightblue', 'lightgreen'];
+const blockColor = [
+  '#F0F8FF',
+  '#FAEBD7',
+  '#7FFFD4',
+  '#F5F5DC',
+  '#8A2BE2',
+  '#5F9EA0',
+  '#6495ED',
+  '#FF7F50',
+  '#D2691E',
+  '#DC143C',
+  '#A9A9A9',
+  '#556B2F',
+  '#BDB76B',
+  '#FF8C00',
+  '#9932CC',
+  '#483D8B',
+  '#00BFFF',
+  '#E9967A',
+  '#DCDCDC',
+  '#FFFACD',
+  '#FFB6C1',
+  '#E6E6FA',
+  '#FFF0F5',
+];
 
 export default class TimeLine extends React.Component {
   constructor(props) {
     super(props);
+    //console.log('TimeLine(', this.state.roomName, ') - constructor');
     this.state = {
       today: this.props.day,
       roomName: this.props.roomName,
       rooms: this.props.rooms,
+      bookings: this.props.bookings,
       timedata: [],
-      bookingDatas: this.props.bookings,
       isModalVisible: false,
-      selectBlockColor: '',
+      selectedBlockColor: '',
+      isRefresh: false,
+      selectedBlock: '',
     };
 
+    this._clearTimeData();
+  }
+
+  componentDidMount() {
+    //console.log('TimeLine - componentDidMount');
+    this._settingTimeBlock();
+  }
+
+  _checkRoomName = data => {
+    //console.log('TimeLine - _checkRoomName');
+    if (this.state.roomName !== data.roomName) {
+      return false;
+    }
+    return true;
+  };
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    //console.log('TimeLine - getDerivedStateFromProps');
+    if (nextProps.bookings !== prevState.bookings) {
+      return {
+        bookings: nextProps.bookings,
+        isRefresh: nextProps.navigation.state.params.isRefresh,
+      };
+    } else {
+      return {
+        isRefresh: false,
+      };
+    }
+  }
+
+  _getRandomColor() {
+    //console.log('TimeLine(', this.state.roomName, ') - _getRandomColor');
+    var item = blockColor[Math.floor(Math.random() * blockColor.length)];
+    this.state.selectedBlockColor = item;
+  }
+
+  _clearTimeData = () => {
+    console.log('_clearTimeData');
+    const tempBlock = [];
     for (let i = 0; i < 26; i++) {
-      this.state.timedata.push({
-        check: false,
+      tempBlock.push({
+        check: false, //데이터의 유무 체크
         day: '',
         roomName: '',
         start: '',
@@ -34,46 +98,20 @@ export default class TimeLine extends React.Component {
         name: '',
         id: i,
         description: '',
-        isStart: false,
+        isStart: false, //데이터의 시작 블록 체크
         blockColor: '',
       });
     }
-    console.log('TimeLine constructor create');
-  }
-  // componentDidMount() {
-  //   this._settingScheduleBlock();
-  // }
 
-  static getDerivedStateFromProps(nextProps, beforeState) {
-    //console.log('123123', nextProps.bookings);
-    //console.log('456456', beforeState.bookingDatas);
-    if (nextProps.bookings !== beforeState.bookings) {
-      return {
-        bookingDatas: nextProps.bookings,
-      };
-    }
-  }
-
-  _checkRoomName = data => {
-    if (this.state.roomName !== data.roomName) {
-      return false;
-    }
-    return true;
+    this.state.timedata = tempBlock;
   };
 
-  _getRandomColor() {
-    var item = blockColor[Math.floor(Math.random() * blockColor.length)];
-    this.state.selectBlockColor = item;
-  }
+  _settingTimeBlock = () => {
+    //console.log('TimeLine(', this.state.roomName, ') - _settingTimeBlock');
+    this._clearTimeData();
 
-  componentDidMount() {
-    this._settingScheduleBlock();
-  }
-
-  _settingScheduleBlock = async () => {
     const newTimeData = this.state.timedata; // 복사
-
-    await this.state.bookingDatas.map((data, index) => {
+    this.state.bookings.map((data, index) => {
       if (this._checkRoomName(data)) {
         var startTime = data.startTime.split(':');
         var endTime = data.endTime.split(':');
@@ -101,7 +139,7 @@ export default class TimeLine extends React.Component {
               isStart: true,
               id: this.state.timedata[i].id,
               size: endTime[0] - startTime[0],
-              color: this.state.selectBlockColor,
+              color: this.state.selectedBlockColor,
             };
           } else {
             newTimeData[i] = {
@@ -116,18 +154,20 @@ export default class TimeLine extends React.Component {
               isStart: false,
               size: '',
             };
-
-            //rerender를 위해 기존 state.timedata를 newTimeData로 바꿔넣기
           }
         }
       }
     });
+    //rerender를 위해 기존 state.timedata를 newTimeData로 바꿔넣기
     this.setState({
       timedata: newTimeData,
     });
+
+    //console.log('!!', this.state.timedata);
   };
 
-  _toggleModal = () => {
+  _toggleModal = rowdata => {
+    console.log('rowData:', rowdata.start);
     this.state.isModalVisible
       ? this.setState({
           isModalVisible: false,
@@ -135,89 +175,108 @@ export default class TimeLine extends React.Component {
         })
       : this.setState({
           isModalVisible: true,
+          selectedBlock: {
+            start: rowdata.start,
+            end: rowdata.end,
+            name: rowdata.name,
+            roomName: rowdata.roomName,
+            description: rowdata.description,
+          },
         });
   };
 
   render() {
-    const {timedata} = this.state;
-    console.log('Time-Line render');
-    //  console.log(timedata);
+    //console.log('TimeLine(', this.state.roomName, ') - render');
+    //console.log('book!', this.state.bookings);
+
+    const {timedata, isRefresh, selectedBlock} = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.row}>
-          {console.log(timedata)}
-          {timedata.map((rowdata, index) => {
-            return rowdata.check ? (
-              rowdata.isStart ? (
+        {isRefresh ? (
+          this._settingTimeBlock()
+        ) : (
+          <View style={styles.row}>
+            {timedata.map((rowdata, index) => {
+              return rowdata.check ? (
+                rowdata.isStart ? (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => this._toggleModal(rowdata)}
+                      key={index}
+                      style={[
+                        styles.scheduleblock,
+                        {width: rowdata.size * wp('10%')},
+                        {backgroundColor: rowdata.color},
+                      ]}>
+                      <Text numberOfLines={2} style={{padding: 7}}>
+                        {rowdata.start +
+                          ' ~ ' +
+                          rowdata.end +
+                          ' ' +
+                          rowdata.description +
+                          ' (' +
+                          rowdata.name +
+                          ')'}
+
+                        {console.log(
+                          '텍스트:',
+                          rowdata.id,
+                          rowdata.start,
+                          '~',
+                          rowdata.end,
+                        )}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : null
+              ) : (
                 <View>
                   <TouchableOpacity
-                    onPress={this._toggleModal}
                     key={index}
-                    style={[
-                      styles.scheduleblock,
-                      {width: rowdata.size * wp('10%')},
-                      {backgroundColor: rowdata.color},
-                    ]}>
-                    <Text numberOfLines={2} style={{padding: 7}}>
-                      {rowdata.start +
-                        ' ~ ' +
-                        rowdata.end +
-                        ' ' +
-                        rowdata.description +
-                        ' (' +
-                        rowdata.name +
-                        ')'}
-                    </Text>
-                  </TouchableOpacity>
-                  <Modal
-                    isVisible={this.state.isModalVisible}
-                    backdropOpacity={0.6}
-                    onBackdropPress={this._toggleModal}>
-                    <View style={styles.centeredView}>
-                      <View style={styles.modalView}>
-                        <View style={styles.text_container}>
-                          <Text style={styles.text_header}>예약자 :</Text>
-                          <Text style={styles.text}>{rowdata.name}</Text>
-                        </View>
-                        <View style={styles.text_container}>
-                          <Text style={styles.text_header}>회의실 :</Text>
-                          <Text style={styles.text}>{rowdata.roomName}</Text>
-                        </View>
-                        <View style={styles.text_container}>
-                          <Text style={styles.text_header}>예약시간 :</Text>
-                          <Text style={styles.text}>
-                            {rowdata.start} ~ {rowdata.end}
-                          </Text>
-                        </View>
-                        <View style={styles.text_container}>
-                          <Text style={styles.text_header}>이용목적 :</Text>
-                          <Text style={styles.text}>{rowdata.description}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  </Modal>
+                    style={styles.timeblock}
+                    //onLongPress={() => console.log('꾹누름 드래그옵션')}
+                    onPress={() =>
+                      this.props.navigation.navigate('Booking_step3', {
+                        navigation: this.props.navigation,
+                        day: this.props.day,
+                        rooms: this.state.rooms,
+                        roomName: this.state.roomName,
+                        startTime: rowdata.id,
+                      })
+                    }
+                  />
                 </View>
-              ) : null
-            ) : (
-              <View>
-                <TouchableOpacity
-                  key={index}
-                  style={styles.timeblock}
-                  //onLongPress={() => console.log('꾹누름 드래그옵션')}
-                  onPress={() =>
-                    this.props.navigation.navigate('Booking_step3', {
-                      navigation: this.props.navigation,
-                      day: this.props.day,
-                      rooms: this.state.rooms,
-                      roomName: this.state.roomName,
-                      startTime: rowdata.id,
-                    })
-                  }
-                />
+              );
+            })}
+          </View>
+        )}
+        <Modal
+          isVisible={this.state.isModalVisible}
+          backdropOpacity={0.6}
+          onBackdropPress={this._toggleModal}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={styles.text_container}>
+                <Text style={styles.text_header}>예약자 :</Text>
+                <Text style={styles.text}>{selectedBlock.name}</Text>
               </View>
-            );
-          })}
-        </View>
+              <View style={styles.text_container}>
+                <Text style={styles.text_header}>회의실 :</Text>
+                <Text style={styles.text}>{selectedBlock.roomName}</Text>
+              </View>
+              <View style={styles.text_container}>
+                <Text style={styles.text_header}>예약시간 :</Text>
+                <Text style={styles.text}>
+                  {selectedBlock.start} ~ {selectedBlock.end}
+                </Text>
+              </View>
+              <View style={styles.text_container}>
+                <Text style={styles.text_header}>이용목적 :</Text>
+                <Text style={styles.text}>{selectedBlock.description}</Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
