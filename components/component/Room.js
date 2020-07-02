@@ -63,26 +63,11 @@ export default class Room extends Component {
 
   _clickArrowButton = value => {
     //console.log('123124123123124', this.state.bookingsRefresh);
-    //this.setState({bookingsRefresh: false});
     const today = this.state.day;
     const tempday = new Date(today);
-    // console.log(this.state.day);
     tempday.setDate(tempday.getDate() + value);
-
-    //console.log(tempday.toISOString().substr(0, 10));
-    //this.state._setChangeDay(tempday.toISOString().substr(0, 10));
-
-    // this.setState({
-    //   day: tempday.toISOString().substr(0, 10),
-    // });
-
     this.state.day = tempday.toISOString().substr(0, 10);
-    //console.log(this.state.day);
-    //console.log('getBooking before');
     this._getBookings();
-    //console.log('getBooking after');
-    //console.log('함수 부른거 맞음?');
-    //console.log(this.state.bookings);
   };
 
   _getBookings = async () => {
@@ -101,7 +86,6 @@ export default class Room extends Component {
   render() {
     const {rooms, bookings, isExistData, day} = this.state;
     // console.log('Room - render');
-    // console.log('bookings:', bookings);
     return (
       <View style={styles.container}>
         <View style={styles.day_header}>
@@ -142,21 +126,29 @@ export default class Room extends Component {
                 })}
               </View>
               <View style={styles.shedule_container}>
-                {isExistData
-                  ? rooms.map((item, key) => {
-                      return (
-                        <View style={styles.shedule} key={key}>
-                          <TimeLine
-                            rooms={rooms}
-                            bookings={bookings}
-                            roomName={item.room_name}
-                            day={day}
-                            navigation={this.props.navigation}
-                          />
-                        </View>
-                      );
-                    })
-                  : null}
+                {isExistData ? (
+                  rooms.map((item, key) => {
+                    return (
+                      <View style={styles.shedule} key={key}>
+                        <TimeLine
+                          rooms={rooms}
+                          bookings={bookings}
+                          roomName={item.room_name}
+                          day={day}
+                          navigation={this.props.navigation}
+                        />
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={styles.Indicator_container}>
+                    <ActivityIndicator
+                      size="small"
+                      color="gray"
+                      style={{paddingLeft: wp('40%')}}
+                    />
+                  </View>
+                )}
               </View>
             </View>
           </ScrollView>
@@ -247,5 +239,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#cdcdcd',
     borderBottomWidth: 0.5,
     flexDirection: 'row',
+  },
+  Indicator_container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 });

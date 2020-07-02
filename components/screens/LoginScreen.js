@@ -24,7 +24,6 @@ export default class LoginScreen extends React.Component {
     this.state = {
       checked: false,
     };
-    console.log('this, ' + hp('100%'));
   }
 
   render() {

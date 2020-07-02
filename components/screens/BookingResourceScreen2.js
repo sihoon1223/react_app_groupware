@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {StyleSheet, View, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import Room from '../component/Room';
 import LoadingScreen from './LoadingScreen';
 import {ThemeConsumer} from 'react-native-elements';
@@ -25,11 +25,14 @@ export default class BookingResourceScreen2 extends React.Component {
     //console.log('BRS2 - render');
 
     return (
-      // null 부분에 데이터 불러올때 인디케이터를 띄운다던가,, 로딩뷰를 띄우기
       <View style={styles.container}>
         {isExistData ? (
           <Room day={day} rooms={rooms} navigation={this.props.navigation} />
-        ) : null}
+        ) : (
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <ActivityIndicator size="small" color="gray" />
+          </View>
+        )}
       </View>
     );
   }
