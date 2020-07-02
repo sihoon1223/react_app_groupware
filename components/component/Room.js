@@ -67,7 +67,7 @@ export default class Room extends Component {
     //this.setState({bookingsRefresh: false});
     const today = this.state.day;
     const tempday = new Date(today);
-    console.log(this.state.day);
+    // console.log(this.state.day);
     tempday.setDate(tempday.getDate() + value);
 
     //console.log(tempday.toISOString().substr(0, 10));
@@ -78,10 +78,10 @@ export default class Room extends Component {
     // });
 
     this.state.day = tempday.toISOString().substr(0, 10);
-    console.log(this.state.day);
-    console.log('getBooking before');
+    //console.log(this.state.day);
+    //console.log('getBooking before');
     this._getBookings();
-    console.log('getBooking after');
+    //console.log('getBooking after');
     //console.log('함수 부른거 맞음?');
     //console.log(this.state.bookings);
   };
