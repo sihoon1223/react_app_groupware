@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ActivityIndicator} from 'react-native';
 import Room from '../component/Room';
 import Get from '../module/Get';
 
@@ -14,17 +14,35 @@ export default class BookingResourceScreen2 extends React.Component {
     };
   }
 
+  _setChangeDay = value => {
+    // this.props.navigation.state.params.day.dateString = value;
+
+    console.log('day change start');
+    this.setState({
+      day: value,
+      change: value,
+    });
+    console.log('day change end');
+    //this.state.day = value;
+  };
+
   render() {
+    console.log('bookingscreen - render', this.state.day);
     return (
       <View style={styles.container}>
         {this._getRoomData()}
         {this.state.isLoading ? (
           <Room
+            _setChangeDay={this._setChangeDay}
             day={this.state.day}
             rooms={this.state.rooms}
             navigation={this.props.navigation}
           />
-        ) : null}
+        ) : (
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        )}
       </View>
     );
   }

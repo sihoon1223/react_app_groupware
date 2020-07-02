@@ -38,12 +38,22 @@ export default class TimeLine extends React.Component {
         blockColor: '',
       });
     }
-    //console.log('con:', this.state.bookingDatas);
-    this._settingScheduleBlock();
+    console.log('TimeLine constructor create');
   }
   // componentDidMount() {
   //   this._settingScheduleBlock();
   // }
+
+  static getDerivedStateFromProps(nextProps, beforeState) {
+    //console.log('123123', nextProps.bookings);
+    //console.log('456456', beforeState.bookingDatas);
+    if (nextProps.bookings !== beforeState.bookings) {
+      return {
+        bookingDatas: nextProps.bookings,
+      };
+    }
+  }
+
   _checkRoomName = data => {
     if (this.state.roomName !== data.roomName) {
       return false;
@@ -56,19 +66,23 @@ export default class TimeLine extends React.Component {
     this.state.selectBlockColor = item;
   }
 
-  _settingScheduleBlock = () => {
+  componentDidMount() {
+    this._settingScheduleBlock();
+  }
+
+  _settingScheduleBlock = async () => {
     const newTimeData = this.state.timedata; // 복사
 
-    this.state.bookingDatas.map((data, index) => {
+    await this.state.bookingDatas.map((data, index) => {
       if (this._checkRoomName(data)) {
         var startTime = data.startTime.split(':');
         var endTime = data.endTime.split(':');
         startTime[0] = (startTime[0] - 9) * 2;
         endTime[0] = (endTime[0] - 9) * 2;
-        if (endTime[1] - 30 == 0) {
+        if (endTime[1] - 30 === 0) {
           endTime[0] += 1;
         }
-        if (startTime[1] - 30 == 0) {
+        if (startTime[1] - 30 === 0) {
           startTime[0] += 1;
         }
 
@@ -104,12 +118,12 @@ export default class TimeLine extends React.Component {
             };
 
             //rerender를 위해 기존 state.timedata를 newTimeData로 바꿔넣기
-            this.setState({
-              timedata: newTimeData,
-            });
           }
         }
       }
+    });
+    this.setState({
+      timedata: newTimeData,
     });
   };
 
@@ -126,9 +140,12 @@ export default class TimeLine extends React.Component {
 
   render() {
     const {timedata} = this.state;
+    console.log('Time-Line render');
+    //  console.log(timedata);
     return (
       <View style={styles.container}>
         <View style={styles.row}>
+          {console.log(timedata)}
           {timedata.map((rowdata, index) => {
             return rowdata.check ? (
               rowdata.isStart ? (

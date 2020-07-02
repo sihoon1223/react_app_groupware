@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,6 +13,7 @@ import {
 import Get from '../module/Get';
 import TimeLine from '../component/TimeLine';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Indicator from '../component/WaitIndicator';
 
 const tableHead = [
   '9:00',
@@ -34,10 +41,15 @@ export default class Room extends Component {
       bookings: [],
       // roomsRefresh: false,
       bookingsRefresh: false,
+      _setChangeDay: this.props._setChangeDay,
+      number_increase: 0,
     };
+    //console.log('room 에서 create', this.props.day);
+    console.log('Room Constructor Create');
   }
 
   _dataFromChild = (dataType, datas) => {
+    //console.log('이거 겟 한거', datas);
     this.setState({
       [`${dataType}`]: datas,
       [`${dataType}Refresh`]: true,
@@ -53,39 +65,125 @@ export default class Room extends Component {
     />
   );
 
-  _getBookingData = () => (
-    <Get
-      url={
-        'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
-        this.props.day
-      }
-      dataFromChild={this._dataFromChild}
-      dataType="bookings"
-    />
-  );
+  // componentDidMount() {
+  //   this.setState({
+  //     bookingsRefresh: false,
+  //   });
+  //   this.state.bookingsRefresh = false;
+  // }
+
+  // componentWillMount() {
+  //   this._getBookingData();
+  // }
+
+  _getBookingData = async () => {
+    console.log('getBooking start');
+    // console.log('dlrjajfalsdfjalsdf', this.state.day);
+    // const response = await fetch(
+    //   'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
+    //     this.state.day,
+    // )
+    //   .then(jsondata => {
+    //     return jsondata.json();
+    //   })
+    //   .then(data => {
+    //     this.setState({bookings: data, bookingsRefresh: true});
+    //     console.log('alksdjflakjsdfl;akjsdfl', this.state.bookings);
+    //   });
+    const response = await fetch(
+      'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
+        this.state.day,
+    );
+    const jsondata = await response.json();
+    console.log('getBooking  setstate before');
+    this.setState({bookings: jsondata, bookingsRefresh: true});
+    console.log('getBooking setstate after');
+    //const responseJson = await response.json();
+
+    // console.log(responseJson);
+    // this._dataFromChild('bookings', responseJson);
+
+    // <Get
+    //   url={
+    //     'http://210.181.192.190:8080/api/bookings/search?bookingDay=' +
+    //     this.state.day
+    //   }
+    //   dataFromChild={this._dataFromChild}
+    //   dataType="bookings"
+    // />
+  };
+
+  _clickArrowButton = value => {
+    //console.log('123124123123124', this.state.bookingsRefresh);
+    //this.setState({bookingsRefresh: false});
+    const today = this.state.day;
+    const tempday = new Date(today);
+    console.log(this.state.day);
+    tempday.setDate(tempday.getDate() + value);
+
+    //console.log(tempday.toISOString().substr(0, 10));
+    //this.state._setChangeDay(tempday.toISOString().substr(0, 10));
+
+    // this.setState({
+    //   day: tempday.toISOString().substr(0, 10),
+    // });
+
+    this.state.day = tempday.toISOString().substr(0, 10);
+    console.log(this.state.day);
+    console.log('getBooking before');
+    this._getBookingData();
+    console.log('getBooking after');
+    //console.log('함수 부른거 맞음?');
+    //console.log(this.state.bookings);
+  };
+
+  componentDidMount() {
+    // console.log('room - didmount');
+    this._getBookingData();
+  }
+  // componentDidUpdate() {
+  //   this._getBookingData();
+  // }
 
   render() {
+    console.log('room - render');
+
+    console.log(this.state.bookings);
+    //this._getBookingData();
+
     const {rooms, bookings, roomsRefresh, bookingsRefresh} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.day_header}>
-          <Text style={{fontWeight: 'bold'}}>{this.props.day}</Text>
+          <Icon
+            name="md-arrow-dropleft"
+            style={{fontSize: 25, marginRight: 5}}
+            onPress={() => this._clickArrowButton(-1)}
+          />
+          <Text style={{fontWeight: 'bold'}}>{this.state.day}</Text>
+          <Icon
+            name="md-arrow-dropright"
+            style={{fontSize: 25, marginLeft: 5}}
+            onPress={() => this._clickArrowButton(1)}
+          />
         </View>
         <View style={styles.subContainer}>
           <View style={styles.room_header}>
             <View style={styles.empty_container} />
             {/* {this._getRoomData()} */}
-            {rooms
-              ? rooms.map((item, key) => {
-                  return (
-                    <View style={styles.room_header_container} key={key}>
-                      <View style={styles.room}>
-                        <Text>{item.room_name}</Text>
-                      </View>
+            {rooms ? (
+              rooms.map((item, key) => {
+                return (
+                  <View style={styles.room_header_container} key={key}>
+                    <View style={styles.room}>
+                      <Text>{item.room_name}</Text>
                     </View>
-                  );
-                })
-              : null}
+                  </View>
+                );
+              })
+            ) : (
+              <Indicator />
+            )}
           </View>
           <ScrollView horizontal>
             <View style={styles.main_container}>
@@ -99,24 +197,29 @@ export default class Room extends Component {
                 })}
               </View>
               <View style={styles.shedule_container}>
-                {this._getBookingData()}
-
                 {/* {roomsRefresh && bookingsRefresh */}
-                {bookingsRefresh
-                  ? rooms.map((item, key) => {
-                      return (
-                        <View style={styles.shedule} key={key}>
-                          <TimeLine
-                            rooms={this.state.rooms}
-                            roomName={item.room_name}
-                            day={this.props.day}
-                            navigation={this.props.navigation}
-                            bookings={this.state.bookings}
-                          />
-                        </View>
-                      );
-                    })
-                  : null}
+                {bookingsRefresh ? (
+                  rooms.map((item, key) => {
+                    // this.state.number_increase += 1;
+                    return (
+                      <View style={styles.shedule}>
+                        <TimeLine
+                          //key={this.state.number_increase}
+                          rooms={this.state.rooms}
+                          roomName={item.room_name}
+                          day={this.state.day}
+                          navigation={this.props.navigation}
+                          bookings={this.state.bookings}
+                        />
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={{backgroundColor: 'blue'}}>
+                    <ActivityIndicator size="large" color="gray" />
+                  </View>
+                )}
+                {(this.state.bookingsRefresh = false)}
               </View>
             </View>
           </ScrollView>
