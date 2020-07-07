@@ -35,11 +35,11 @@ export default class CheckExcutiveScreen extends React.Component {
   }
 
   _getExecutive = async url => {
-    const response = await fetch('http://210.181.192.198:8080/v1/executive');
+    const response = await fetch('http://210.181.192.190:8080/v1/executive');
     const responseJson = await response.json();
 
     const response_state = await fetch(
-      'http://210.181.192.198:8080/v1/executivestate',
+      'http://210.181.192.190:8080/v1/executivestate',
     );
     const response_json = await response_state.json();
 

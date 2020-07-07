@@ -11,7 +11,15 @@ class SettingScreen extends React.Component {
   constructor(props) {
     super(props);
   }
-
+  settings = [
+    {
+      routerName: 'ExecutiveScreen',
+      settingName: '재실 임원 수정',
+      isAuth: true,
+    },
+    {settingName: '기본 환경 설정', isAuth: false},
+    {settingName: '푸쉬 알림 설정', isAuth: false},
+  ];
   render() {
     return (
       <View style={styles.container}>

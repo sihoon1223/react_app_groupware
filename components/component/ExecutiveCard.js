@@ -97,7 +97,7 @@ export default class ExecutiveCard extends React.Component {
             onPress: () => {
               resolve('YES');
               const url = new URL(
-                'http://210.181.192.198:8080/v1/executivestate/' +
+                'http://210.181.192.190:8080/v1/executivestate/' +
                   this.state.ExecId,
               );
 
@@ -238,7 +238,7 @@ export default class ExecutiveCard extends React.Component {
                             // setState로 리랜더링 되도록
 
                             const url = new URL(
-                              'http://210.181.192.198:8080/v1/executivestate/' +
+                              'http://210.181.192.190:8080/v1/executivestate/' +
                                 this.state.ExecId,
                             );
 
